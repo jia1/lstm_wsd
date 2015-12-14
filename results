@@ -1,0 +1,34 @@
+Target to beat: 0.662
+
+1.
+With forward LSTM full length. No stemming. No stop words. No unsupervised training.
+min_freq=5 => Vocabulary size: 14329
+Cost (train/val): 2.053906/2.041744, Accuracy (train/val): 0.482063/0.471905
+
+
+2.
+As (1.), but with stemming.
+min_freq=5 => Vocabulary size: 11079
+Cost (train/val): 2.062860/2.011632, Accuracy (train/val): 0.479048/0.485238
+
+
+3.
+As (2.), but with variable input sequence length.
+n_step = 20
+EPOCH: 348
+Cost (train/val): 1.589458/1.553583, Accuracy (train/val): 0.479677/0.484500
+
+4.
+As (3.), but with forward AND backward LSTM (bidirectional).
+EPOCH: 138
+Cost (train/val): 1.732096/1.760567, Accuracy (train/val): 0.482321/0.476250
+
+
+
+
+
+todo
+
+stop words
+init with pretrained wordvecs
+unsupervised
