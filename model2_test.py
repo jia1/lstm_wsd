@@ -44,58 +44,59 @@ class DataTest(unittest.TestCase):
 
 
 class FeatureTest(unittest.TestCase):
-    # def test_variable_scope(self):
-    #     with tf.Session() as se:
-    #         initer = tf.constant_initializer(2.)
-    #
-    #         x = tf.placeholder(tf.float32, [None])
-    #
-    #         def setup_ops(scope_name, size):
-    #             with tf.variable_scope(scope_name, initializer=initer):
-    #                 w = tf.get_variable('w', [size])
-    #
-    #             y = tf.mul(w, x)
-    #             return y
-    #
-    #         y1_op = setup_ops('one', 2)
-    #         y2_op = setup_ops('two', 3)
-    #
-    #         x1 = np.array([1., 2.])
-    #         x2 = np.array([1., 2., 3.])
-    #
-    #         tf.initialize_all_variables().run(session=se)
-    #
-    #         y1 = se.run([y1_op], {x: x1}, )
-    #         y2 = se.run([y2_op], {x: x2})
-    #
-    #         self.assertEqual(np.sum(y1), 6)
-    #         self.assertEqual(np.sum(y2), 12)
+    def test_variable_scope(self):
+        with tf.Session() as se:
+            initer = tf.constant_initializer(2.)
+
+            x = tf.placeholder(tf.float32, [None])
+
+            def setup_ops(scope_name, size):
+                with tf.variable_scope(scope_name, initializer=initer):
+                    w = tf.get_variable('w', [size])
+
+                y = tf.mul(w, x)
+                return y
+
+            y1_op = setup_ops('one', 2)
+            y2_op = setup_ops('two', 3)
+
+            x1 = np.array([1., 2.])
+            x2 = np.array([1., 2., 3.])
+
+            tf.initialize_all_variables().run(session=se)
+
+            y1 = se.run([y1_op], {x: x1}, )
+            y2 = se.run([y2_op], {x: x2})
+
+            self.assertEqual(np.sum(y1), 6)
+            self.assertEqual(np.sum(y2), 12)
 
     def test_diff_input_len(self):
         with tf.Session() as se:
             def setup_ops(len, reuse):
-                # tf.get_varaiable_scope().reuse_variables()
                 with tf.variable_scope('y', reuse, tf.constant_initializer()):
                     y = tf.get_variable('y', [1])
+                    if reuse:
+                        y = tf.assign(y, [2.])
                 for i in range(len):
-                    # if i > 0: tf.get_variable_scope().reuse_variables()
                     y = y + 1
                 return y
 
             # print tf.get_variable_scope().reuse
             y1_op = setup_ops(5, None)
-            y2_op = setup_ops(6, True)
-            test_op = setup_ops(6, True)
+            y2_op = setup_ops(8, True)
+            y1_post_op = setup_ops(7, True)
+
 
             tf.initialize_all_variables().run(session=se)
 
             y1 = se.run([y1_op])
             y2 = se.run([y2_op])
-            y3 = se.run([test_op])
-            print y3
+            y1_post = se.run([y1_post_op])
 
             self.assertEqual(y1[0], 5.)
-            self.assertEqual(y2[0], 6.)
+            self.assertEqual(y2[0], 10)
+            self.assertEqual(y1_post[0], 9.)
 
 
 class ModelTest(unittest.TestCase):
