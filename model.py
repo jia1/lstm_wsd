@@ -37,9 +37,10 @@ print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 
 class Model:
-    def __init__(self, batch_size, n_step_f, n_step_b, init_word_vecs=None):
+    def __init__(self, is_training, batch_size, n_step_f, n_step_b, init_word_vecs=None):
         self.dbg = {}
         self.batch_size = batch_size
+        self.is_training = is_training
 
         self.inputs_f = tf.placeholder(tf.int32, shape=[batch_size, n_step_f])
         self.inputs_b = tf.placeholder(tf.int32, shape=[batch_size, n_step_b])
@@ -51,7 +52,13 @@ class Model:
 
         vocab_size = len(word_to_id)
         init_emb = init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, 100], -.1, .1)
-        embeddings = tf.Variable(init_emb, name='embeddings')
+        embedding_size = 100
+
+        def embedding_initializer(vec, dtype):
+            return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
+
+        with tf.variable_scope('emb'):
+            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer)
 
         n_units = 100
         state_size = 2 * n_units
@@ -71,25 +78,34 @@ class Model:
         b_starts = tf.constant(_b_starts, tf.int32)
         b_lengths = tf.constant(_b_lengths, tf.int32)
 
-        with tf.variable_scope('target_params', reuse=True):
-            W_target = tf.Variable(tf.random_uniform([tot_n_senses * 2 * state_size], -0.1, 0.1, dtype=tf.float32), name='W_target')
-            b_target = tf.Variable(tf.zeros([tot_n_senses], dtype=tf.float32), name='b_target')
+        with tf.variable_scope('target_params', initializer=tf.random_uniform_initializer(-.1, .1)):
+            W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
+            b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
+        emb_keep_prop = 0.3
         keep_prop = 0.5
+
         with tf.variable_scope("forward"):
-            f_lstm = rnn_cell.DropoutWrapper(rnn_cell.BasicLSTMCell(n_units), output_keep_prob=keep_prop)
+            f_lstm = rnn_cell.BasicLSTMCell(n_units)
+            if is_training:
+                f_lstm = rnn_cell.DropoutWrapper(f_lstm, output_keep_prob=keep_prop)
+
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
-        # run inputs through lstm
             inputs_f = tf.split(1, n_step_f, self.inputs_f)
             for time_step, inputs_ in enumerate(inputs_f):
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
+                if is_training:
+                    emb = tf.nn.dropout(emb, emb_keep_prop)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
-            b_lstm = rnn_cell.DropoutWrapper(rnn_cell.BasicLSTMCell(n_units), output_keep_prob=keep_prop)
+            b_lstm = rnn_cell.BasicLSTMCell(n_units)
+            if is_training:
+                b_lstm = rnn_cell.DropoutWrapper(b_lstm, output_keep_prob=keep_prop)
+
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
             inputs_b = tf.split(1, n_step_b, self.inputs_b)
@@ -97,10 +113,13 @@ class Model:
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
+                if is_training:
+                    emb = tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
-        concat_state = tf.concat(1, [f_state, b_state])
-        state = tf.nn.dropout(concat_state, keep_prop)
+        state = tf.concat(1, [f_state, b_state])
+        if is_training:
+            state = tf.nn.dropout(state, keep_prop)
 
         loss = tf.Variable(0., trainable=False)
         n_correct = tf.Variable(0, trainable=False)
@@ -141,8 +160,6 @@ class Model:
 
             if i == batch_size-1:
                 tf.scalar_summary(['p_target'], p_target)
-                tf.scalar_summary(['target_id'], tf.cast(target_id, tf.float32))
-                tf.scalar_summary(['sense_id'], tf.cast(sense_id, tf.float32))
                 tf.scalar_summary(['n_correct'], tf.cast(n_correct, tf.float32))
                 tf.histogram_summary('logits', logits)
                 tf.histogram_summary('W_target', W_target)
@@ -151,6 +168,9 @@ class Model:
         self.cost_op = tf.div(loss, batch_size)
         self.accuracy_op = tf.div(tf.cast(n_correct, tf.float32), batch_size)
         self.error_op = self.cost_op
+
+        if not is_training:
+            return
 
         grads = tf.gradients(self.cost_op, W_target)
         for grad in grads:
@@ -171,17 +191,20 @@ class Model:
         self.summary_op = tf.merge_all_summaries()
 
 
-def run_epoch(session, model, batch_size, train_data, val_data):
-    train_cost = 0.
-    train_acc = 0.
-    val_cost = 0.
-    val_acc = 0.
+def run_epoch(session, model, batch_size, data_, mode):
+    if mode == 'train':
+        ops = [model.cost_op, model.accuracy_op, model.summary_op, model.train_op]
+    elif mode == 'val':
+        ops = [model.cost_op, model.accuracy_op]
+    else:
+        raise ValueError('unknown mode')
 
+    cost = 0.
+    accuracy = 0.
     summaries = []
 
-    n_train_batches = 0
-    train_batch_gen = batch_generator(batch_size, train_data, word_to_id['<pad>'], n_step_f, n_step_b)
-    for batch in train_batch_gen:
+    n_batches = 0
+    for batch in batch_generator(batch_size, train_data, word_to_id['<pad>'], n_step_f, n_step_b):
         xf, xb, target_ids, sense_ids = batch
         feeds = {
             model.inputs_f: xf,
@@ -192,30 +215,20 @@ def run_epoch(session, model, batch_size, train_data, val_data):
 
         # debug(model, session, feeds)
 
-        batch_cost, batch_acc, summary, _ = session.run([model.cost_op, model.accuracy_op, model.summary_op, model.train_op], feeds)
-        train_cost += batch_cost
-        train_acc += batch_acc
-        summaries.append(summary)
-        n_train_batches += 1
 
-    n_val_batches = 0
-    val_batch_gen = batch_generator(batch_size, val_data, word_to_id['<pad>'], n_step_f, n_step_b)
-    for batch in val_batch_gen:
-        xf, xb, target_ids, sense_ids = batch
-        batch_cost, batch_acc = session.run([model.cost_op, model.accuracy_op], {
-            model.inputs_f: xf,
-            model.inputs_b: xb,
-            model.train_target_ids: target_ids,
-            model.train_sense_ids: sense_ids
-        })
-        val_cost += batch_cost
-        val_acc += batch_acc
-        n_val_batches += 1
+        fetches = session.run(ops, feeds)
 
-    print 'Cost (train/val): %f/%f, Accuracy (train/val): %f/%f'\
-          % (train_cost / n_train_batches, val_cost / n_val_batches, train_acc / n_train_batches, val_acc / n_val_batches )
+        cost += fetches[0]
+        accuracy += fetches[1]
+        if mode == 'train':
+            summaries.append(fetches[2])
+        n_batches += 1
 
-    return summaries
+    print '::: %s \t::: cost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
+
+    if mode == 'train':
+        return summaries
+
 
 def debug(model, session, feed_dict):
     for name, op in model.dbg.iteritems():
@@ -228,9 +241,12 @@ if __name__ == '__main__':
     batch_size = 200
     train_data, val_data = train_test_split(train_ndata)
 
-    init_emb = None    # fill_with_gloves(word_to_id, 100)
+    init_emb = fill_with_gloves(word_to_id, 100)
 
-    model = Model(batch_size, n_step_f, n_step_b, init_emb)
+    with tf.variable_scope('model', reuse=None):
+        model_train = Model(True, batch_size, n_step_f, n_step_b, init_emb)
+    with tf.variable_scope('model', reuse=True):
+        model_val = Model(False, batch_size, n_step_f, n_step_b, init_emb)
 
     session = tf.Session()
     session.run(tf.initialize_all_variables())
@@ -240,7 +256,8 @@ if __name__ == '__main__':
 
     for i in range(n_epochs):
         print 'EPOCH: %d' % i
-        summaries = run_epoch(session, model, batch_size, train_data, val_data)
+        summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
+        run_epoch(session, model_val, batch_size, val_data, 'val')
         for batch_idx, summary in enumerate(summaries):
             writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 

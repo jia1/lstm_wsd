@@ -153,7 +153,7 @@ def run_epoch(session, models, data_, mode):
 
         cost += fetches[0]
         accuracy += fetches[1]
-        if 'train':
+        if mode == 'train':
             summaries.append(fetches[2])
         n_batches += 1
 

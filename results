@@ -24,18 +24,25 @@ EPOCH: 138
 Cost (train/val): 1.732096/1.760567, Accuracy (train/val): 0.482321/0.476250
 
 5.
-
+As 4, but fixed broadcasting bug.
+EPOCH: 41
+Cost (train/val): 0.791101/1.865055, Accuracy (train/val): 0.720645/0.480000
 
 6.
-As 4, but with glove and fixed broadcasting bug.
+As 5, but with glove.
 EPOCH: 41
 Cost (train/val): 0.727260/2.038966, Accuracy (train/val): 0.742097/0.456000
+
+7.
+Dropout on embeddings
+EPOCH: 53
+TRAIN ::: cost: 0.687805, accuracy: 0.754677
+VAL ::: cost: 2.504641, accuracy: 0.392258
+
 
 
 
 
 todo
-
 stop words
-init with pretrained wordvecs
 unsupervised
