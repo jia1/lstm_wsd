@@ -38,14 +38,16 @@ print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 class Model:
     def __init__(self, batch_size, n_step_f, n_step_b, init_word_vecs=None):
+        self.dbg = {}
         self.batch_size = batch_size
 
-        self.train_inputs = train_inputs = tf.placeholder(tf.int32, shape=[batch_size, n_step_f])
+        self.inputs_f = tf.placeholder(tf.int32, shape=[batch_size, n_step_f])
+        self.inputs_b = tf.placeholder(tf.int32, shape=[batch_size, n_step_b])
         self.train_target_ids = train_target_ids = tf.placeholder(tf.int32, shape=[batch_size])
         self.train_sense_ids = train_sense_ids = tf.placeholder(tf.int32, shape=[batch_size])
 
         tot_n_senses = sum(n_senses_from_target_id.values())
-        self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
+        # self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
 
         vocab_size = len(word_to_id)
         init_emb = init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, 100], -.1, .1)
@@ -79,7 +81,7 @@ class Model:
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
         # run inputs through lstm
-            inputs_f = tf.split(1, n_step_f, train_inputs)
+            inputs_f = tf.split(1, n_step_f, self.inputs_f)
             for time_step, inputs_ in enumerate(inputs_f):
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
@@ -90,7 +92,7 @@ class Model:
             b_lstm = rnn_cell.DropoutWrapper(rnn_cell.BasicLSTMCell(n_units), output_keep_prob=keep_prop)
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
-            inputs_b = tf.split(1, n_step_b, train_inputs)
+            inputs_b = tf.split(1, n_step_b, self.inputs_b)
             for time_step, inputs_ in enumerate(inputs_b):
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
@@ -113,32 +115,36 @@ class Model:
             target_id = unbatched_target_ids[i]  # tf.split(train_target_ids, i, [1])
             sense_id = unbatched_sense_ids[i]
 
-            self.W = W = tf.reshape(tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)), [-1, 2*state_size])
-            self.b = b = tf.slice(b_target, tf.slice(b_starts, target_id, one), tf.slice(b_lengths, target_id, one))
+            self.dbg['W'] = W = tf.reshape(tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)), [-1, 2*state_size])
+            self.dbg['b'] = b = tf.slice(b_target, tf.slice(b_starts, target_id, one), tf.slice(b_lengths, target_id, one))
 
-            self.logits = logits = tf.matmul(W, unbatched_states[i], False, True) + b
-            self.l = l = tf.reshape(logits, [-1])
-            exp_logits = tf.exp(l)
+            self.dbg['ub_states'] = unbatched_states[i]
+            self.dbg['ub_states.shape'] = tf.shape(unbatched_states[i])
+
+            self.dbg['pre_b'] = tf.squeeze(tf.matmul(W, unbatched_states[i], False, True))
+            self.dbg['logits'] = logits = tf.squeeze(tf.matmul(W, unbatched_states[i], False, True)) + b
+            self.dbg['exp_logits'] = exp_logits = tf.exp(logits)
             summ = tf.reduce_sum(exp_logits)
-            self.p_targets = p_targets = exp_logits / summ
+            self.dbg['p_targets'] = p_targets = exp_logits / summ
 
             n_senses = tf.slice(n_senses_sorted_by_target_id_tf, target_id, [1])
             answer = tf.sparse_to_dense(sense_id, n_senses, 1.0, 0.0)
 
             p_target = tf.slice(p_targets, sense_id, one)
             p_target_safe = max(0.0001, p_target)
-            loss += - tf.reduce_sum(tf.mul(answer, tf.log(p_target_safe)))
+            self.dbg['mul'] = mul = tf.mul(answer, tf.log(p_target_safe))
+            loss += - tf.reduce_sum(mul)
             # loss += - tf.log(p_target_safe)
 
             # accuracy
-            n_correct += tf.cast(tf.equal(sense_id, tf.cast(tf.arg_max(l, 0), tf.int32)), tf.int32)
+            n_correct += tf.cast(tf.equal(sense_id, tf.cast(tf.arg_max(logits, 0), tf.int32)), tf.int32)
 
             if i == batch_size-1:
                 tf.scalar_summary(['p_target'], p_target)
                 tf.scalar_summary(['target_id'], tf.cast(target_id, tf.float32))
                 tf.scalar_summary(['sense_id'], tf.cast(sense_id, tf.float32))
                 tf.scalar_summary(['n_correct'], tf.cast(n_correct, tf.float32))
-                tf.histogram_summary('logits', l)
+                tf.histogram_summary('logits', logits)
                 tf.histogram_summary('W_target', W_target)
                 tf.histogram_summary('b_target', b_target)
 
@@ -177,12 +183,16 @@ def run_epoch(session, model, batch_size, train_data, val_data):
     train_batch_gen = batch_generator(batch_size, train_data, word_to_id['<pad>'], n_step_f, n_step_b)
     for batch in train_batch_gen:
         xf, xb, target_ids, sense_ids = batch
-
-        batch_cost, batch_acc, summary, _ = session.run([model.cost_op, model.accuracy_op, model.summary_op, model.train_op], {
-            model.train_inputs: xf,
+        feeds = {
+            model.inputs_f: xf,
+            model.inputs_b: xb,
             model.train_target_ids: target_ids,
             model.train_sense_ids: sense_ids
-        })
+        }
+
+        # debug(model, session, feeds)
+
+        batch_cost, batch_acc, summary, _ = session.run([model.cost_op, model.accuracy_op, model.summary_op, model.train_op], feeds)
         train_cost += batch_cost
         train_acc += batch_acc
         summaries.append(summary)
@@ -193,7 +203,8 @@ def run_epoch(session, model, batch_size, train_data, val_data):
     for batch in val_batch_gen:
         xf, xb, target_ids, sense_ids = batch
         batch_cost, batch_acc = session.run([model.cost_op, model.accuracy_op], {
-            model.train_inputs: xf,
+            model.inputs_f: xf,
+            model.inputs_b: xb,
             model.train_target_ids: target_ids,
             model.train_sense_ids: sense_ids
         })
@@ -206,13 +217,18 @@ def run_epoch(session, model, batch_size, train_data, val_data):
 
     return summaries
 
+def debug(model, session, feed_dict):
+    for name, op in model.dbg.iteritems():
+        print name
+        value = session.run(op, feed_dict)
+        print value
 
 if __name__ == '__main__':
     n_epochs = 500
     batch_size = 200
     train_data, val_data = train_test_split(train_ndata)
 
-    init_emb = fill_with_gloves(word_to_id, 100)
+    init_emb = None    # fill_with_gloves(word_to_id, 100)
 
     model = Model(batch_size, n_step_f, n_step_b, init_emb)
 

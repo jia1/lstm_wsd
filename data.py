@@ -162,16 +162,16 @@ def convert_to_numeric(data, word_to_id, target_word_to_id, target_sense_to_id, 
         instance.xb = xb
         instance.target_id = target_id
         instance.sense_id = sense_id
-        # instance.one_hot_labels = one_hot_encode(n_senses_from_target_id[target_id], sense_id)
+        instance.one_hot_labels = one_hot_encode(n_senses_from_target_id[target_id], sense_id)
         # instance.one_hot_labels = one_hot_encode(tot_n_senses, get_tot_id(target_id, sense_id))
 
         all_data.append(instance)
 
     return all_data
 
-def group_by_target(data):
+def group_by_target(ndata):
     res = {}
-    for key, group in groupby(data, lambda inst: inst.target_id):
+    for key, group in groupby(ndata, lambda inst: inst.target_id):
        res.update({key: list(group)})
     return res
 
@@ -193,6 +193,33 @@ def split_grouped(data, frac, min=None):
         r[target_id] = instances[-n_r:]
 
     return l, r
+
+
+def batchify_grouped(gdata, n_step_f, n_step_b, pad_id, n_senses_from_target_id):
+    res = {}
+    for target_id, instances in gdata.iteritems():
+        batch_size = len(instances)
+        xfs = np.zeros([batch_size, n_step_f], dtype=np.int32)
+        xbs = np.zeros([batch_size, n_step_b], dtype=np.int32)
+        xfs.fill(pad_id)
+        xbs.fill(pad_id)
+
+        # x forward backward
+        for j in range(batch_size):
+            n_to_use_f = min(n_step_f, len(instances[j].xf))
+            n_to_use_b = min(n_step_b, len(instances[j].xb))
+            xfs[j, -n_to_use_f:] = instances[j].xf[-n_to_use_f:]
+            xbs[j, -n_to_use_b:] = instances[j].xb[-n_to_use_b:]
+
+        # labels
+        labels = np.zeros([batch_size, n_senses_from_target_id[target_id]], np.float32)
+        for j in range(batch_size):
+            labels[j, instances[j].sense_id] = 1.
+
+        res[target_id] = (xfs, xbs, labels)
+
+    return res
+
 
 class Instance:
     pass

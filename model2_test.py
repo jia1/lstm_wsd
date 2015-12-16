@@ -98,6 +98,9 @@ class FeatureTest(unittest.TestCase):
             self.assertEqual(y2[0], 10)
             self.assertEqual(y1_post[0], 9.)
 
+    def test_None_len(self):
+        pass
+
 
 class ModelTest(unittest.TestCase):
     def setUp(self):

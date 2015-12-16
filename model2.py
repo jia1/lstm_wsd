@@ -34,34 +34,41 @@ print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 
 class Model:
-    def __init__(self, is_first, target_id, n_step_f, n_step_b, init_word_vecs=None):
-        self.inputs_f = tf.placeholder(tf.int32, shape=[None, n_step_f])
-        self.inputs_b = tf.placeholder(tf.int32, shape=[None, n_step_b])
-        self.target_ids = tf.placeholder(tf.int32, shape=[None])
-        self.sense_ids = tf.placeholder(tf.int32, shape=[None])
+    def __init__(self, is_first, is_training, target_id, batch_size, n_step_f, n_step_b, init_word_vecs=None):
+        n_senses = n_senses_from_target_id[target_id]
+
+        self.inputs_f = tf.placeholder(tf.int32, shape=[batch_size, n_step_f])
+        self.inputs_b = tf.placeholder(tf.int32, shape=[batch_size, n_step_b])
+        # self.target_ids = tf.placeholder(tf.int32, shape=[batch_size])
+        self.sense_ids = tf.placeholder(tf.int32, shape=[batch_size, n_senses])
 
         n_units = 100
         state_size = 2 * n_units
-        n_senses = n_senses_from_target_id[target_id]
 
         reuse = None if is_first else True
 
         vocab_size = len(word_to_id)
         embedding_size = 100
+
         def embedding_initializer(vec, dtype):
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb', reuse):
             embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer)
 
-        with tf.variable_scope(str(target_id)):
+        target_scope_reuse = None if is_training else True
+        with tf.variable_scope(str(target_id), target_scope_reuse):
             W_target = tf.get_variable('W_target', [state_size*2, n_senses], tf.float32)
             b_target = tf.get_variable('b_target', [1, n_senses])
 
         keep_prop = 0.5
         with tf.variable_scope("forward", reuse):
             f_lstm = rnn_cell.DropoutWrapper(rnn_cell.BasicLSTMCell(n_units), output_keep_prob=keep_prop)
-            f_state = tf.get_variable('f_state', [None, state_size], initializer=tf.constant_initializer(0.0), trainable=False)
+            f_state = tf.Variable(tf.zeros([batch_size, state_size]), trainable=False)
+            # tf.get_variable('f_state',
+            #                           [batch_size, state_size],
+            #                           initializer=tf.constant_initializer(0.0),
+            #                           trainable=False)
 
             # run inputs through lstm
             inputs_f = tf.split(1, n_step_f, self.inputs_f)
@@ -74,7 +81,11 @@ class Model:
         with tf.variable_scope("backward", reuse):
             b_lstm = rnn_cell.DropoutWrapper(rnn_cell.BasicLSTMCell(n_units), output_keep_prob=keep_prop)
             # b_state = b_lstm.zero_state(None, tf.float32)
-            b_state = tf.Variable(tf.zeros([None, state_size]))
+            b_state = tf.Variable(tf.zeros([batch_size, state_size]), trainable=False)
+            # b_state = tf.get_variable('b_state',
+            #                           [batch_size, state_size],
+            #                           initializer=tf.constant_initializer(0.0),
+            #                           trainable=False)
 
             inputs_b = tf.split(1, n_step_b, self.inputs_b)
             for time_step, inputs_ in enumerate(inputs_b):
@@ -84,12 +95,15 @@ class Model:
                 _, b_state = b_lstm(emb, b_state)
 
         concat_state = tf.concat(1, [f_state, b_state])
-        state = tf.nn.dropout(concat_state, keep_prop)
+        state = tf.nn.dropout(concat_state, keep_prop) if is_training else concat_state
 
         logits = tf.matmul(state, W_target) + b_target
 
-        self.cost_op = tf.nn.softmax_cross_entropy_with_logits(logits, self.sense_ids)
-        self.accuracy_op = tf.reduce_mean(tf.cast( tf.equal(tf.arg_max(logits, 1), self.sense_ids), tf.float32))
+        self.cost_op = tf.nn.softmax_cross_entropy_with_logits(logits, tf.cast(self.sense_ids, tf.float32))
+        self.accuracy_op = tf.reduce_mean(tf.cast(tf.equal(tf.arg_max(logits, 1), tf.arg_max(self.sense_ids, 1)), tf.float32))
+
+        if not is_training:
+            return
 
         grads = tf.gradients(self.cost_op, W_target)
         for grad in grads:
@@ -110,49 +124,43 @@ class Model:
         self.summary_op = tf.merge_all_summaries()
 
 
-def run_epoch(session, models, train_data, val_data):
-    train_cost = 0.
-    train_acc = 0.
-    val_cost = 0.
-    val_acc = 0.
-
+def run_epoch(session, models, data_, mode):
+    cost = 0.
+    accuracy = 0.
     summaries = []
-    n_train_batches = 0
-    for target_id, data in train_data.iteritems():
+    n_batches = 0
+
+    for target_id, data in data_.iteritems():
+        xf, xb, sense_ids = data
+
+        print sense_ids.shape
+
         model = models[target_id]
-        xf, xb, target_ids, sense_ids = data
+        print tf.shape(model.sense_ids)
 
-        batch_cost, batch_acc, summary, _ = session.run([model.cost_op, model.accuracy_op, model.summary_op, model.train_op], {
+        if mode == 'train':
+            ops = [model.cost_op, model.accuracy_op, model.summary_op, model.train_op]
+        elif mode == 'val':
+            ops = [model.cost_op, model.accuracy_op]
+        else:
+            raise ValueError('unknown mode')
+
+        fetches = session.run(ops, {
             model.inputs_f: xf,
             model.inputs_b: xb,
-            model.target_ids: target_ids,
             model.sense_ids: sense_ids
         })
 
-        train_cost += batch_cost
-        train_acc += batch_acc
-        summaries.append(summary)
-        n_train_batches += 1
+        cost += fetches[0]
+        accuracy += fetches[1]
+        if 'train':
+            summaries.append(fetches[2])
+        n_batches += 1
 
-    n_val_batches = 0
-    for target_id, data in val_data.iteritems():
-        xf, xb, target_ids, sense_ids = data
+    print '%s ::: cost: %f, accuracy: %f' % (mode.upper(), cost, accuracy)
 
-        batch_cost, batch_acc = session.run([model.cost_op, model.accuracy_op], {
-            model.inputs_f: xf,
-            model.inputs_b: xb,
-            model.target_ids: target_ids,
-            model.sense_ids: sense_ids
-        })
-
-        val_cost += batch_cost
-        val_acc += batch_acc
-        n_val_batches += 1
-
-    print 'Cost (train/val): %f/%f, Accuracy (train/val): %f/%f' \
-          % (train_cost / n_train_batches, val_cost / n_val_batches, train_acc / n_train_batches, val_acc / n_val_batches )
-
-    return summaries
+    if mode == 'train':
+        return summaries
 
 
 if __name__ == '__main__':
@@ -160,14 +168,20 @@ if __name__ == '__main__':
 
     grouped_by_target = group_by_target(train_ndata)
     train_data, val_data = split_grouped(grouped_by_target, .2, 2)
+    train_data = batchify_grouped(train_data, n_step_f, n_step_b, word_to_id['<pad>'], n_senses_from_target_id)
+    val_data = batchify_grouped(val_data, n_step_f, n_step_b, word_to_id['<pad>'], n_senses_from_target_id)
 
     init_emb = fill_with_gloves(word_to_id, 100)
 
-    models = {}
+    train_models = {}
+    val_models = {}
     is_first = True
-    for target_id in grouped_by_target.keys():
-        models[target_id] = Model(is_first, target_id, n_step_f, n_step_b, init_emb)
+    for target_id in grouped_by_target.keys()[:3]:
+        batch_size_train = len(train_data[target_id][2])
+        train_models[target_id] = Model(is_first, True, target_id, batch_size_train, n_step_f, n_step_b, init_emb)
         is_first = False
+        batch_size_val = len(val_data[target_id][2])
+        val_models[target_id] = Model(is_first, False, target_id, batch_size_val, n_step_f, n_step_b, None)
 
     session = tf.Session()
     session.run(tf.initialize_all_variables())
@@ -177,7 +191,8 @@ if __name__ == '__main__':
 
     for i in range(n_epochs):
         print 'EPOCH: %d' % i
-        summaries = run_epoch(session, models, train_data, val_data)
+        summaries = run_epoch(session, train_models, train_data, mode='train')
+        run_epoch(session, val_models, val_data, mode='val')
         for batch_idx, summary in enumerate(summaries):
             writer.add_summary(summary)
 
