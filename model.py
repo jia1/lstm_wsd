@@ -57,9 +57,9 @@ class Model:
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
+            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
 
-        n_units = 300
+        n_units = 200
         state_size = 2 * n_units
 
         print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
@@ -81,7 +81,7 @@ class Model:
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
-        emb_noise_std = 0.05
+        emb_noise_std = 0.005
         input_keep_prob = 0.3
         keep_prop = 0.5
 
@@ -97,14 +97,14 @@ class Model:
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
-                if is_training:
-                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)#tf.nn.dropout(emb, emb_keep_prop)
+                # if is_training:
+                #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)#tf.nn.dropout(emb, emb_keep_prop)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
             b_lstm = rnn_cell.BasicLSTMCell(n_units)
             if is_training:
-                b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prop)
+                b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
 
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
@@ -112,9 +112,9 @@ class Model:
             for time_step, inputs_ in enumerate(inputs_b):
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
-                emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
-                if is_training:
-                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
+                self.dbg['emb'] = emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
+                # if is_training:
+                #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
         state = tf.concat(1, [f_state, b_state])

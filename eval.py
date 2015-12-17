@@ -1,5 +1,6 @@
 from data import *
 import tensorflow as tf
+import model
 import os
 import glob
 
@@ -32,6 +33,12 @@ target_word_to_lexelt = target_to_lexelt_map(target_word_to_id.keys(), lexelts)
 session = tf.Session()
 saver = tf.train.Saver()
 
+saver.restore(session, '/home/salomons/tmp/model/wsd1')
+
+model = model.Model(False, 1, n_step_f, n_step_b, None)
+
+for batch in batch_generator(1, train_ndata, target_word_to_id('<pad>'), n_step_f, n_step_b):
+    pass
 
 
 

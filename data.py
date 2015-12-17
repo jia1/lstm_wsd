@@ -23,9 +23,9 @@ rm_misc = re.compile("[\[\]\$`()%/]")
 
 def clean_context(ctx):
     ctx = replace_target.sub(' <target> ', ctx)
-    ctx = replace_newline.sub(' <eop> ', ctx)
-    ctx = replace_dot.sub(' <eos> ', ctx)
-    ctx = replace_cite.sub(' <cite> ', ctx)
+    ctx = replace_newline.sub(' ', ctx)  # (' <eop> ', ctx)
+    ctx = replace_dot.sub(' ', ctx) # (' <eos> ', ctx)
+    ctx = replace_cite.sub(' ', ctx)     # (' <cite> ', ctx)
     ctx = rm_cit_tag.sub(' ', ctx)
     ctx = rm_context_tag.sub('', ctx)
     ctx = rm_misc.sub('', ctx)
@@ -89,6 +89,7 @@ def get_lexelts(path):
         items.append(instance.get('item'))
 
     return items
+
 
 def target_to_lexelt_map(target_words, lexelts):
     assert len(target_words) == len(lexelts)
@@ -276,13 +277,11 @@ def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b):
         # id
         instance_ids = [inst.id for inst in batch]
 
-
         yield (xfs, xbs, target_ids, sense_ids, instance_ids)
 
 
 def write_submission_file(answers):
     pass
-
 
 
 if __name__ == '__main__':
