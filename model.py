@@ -31,8 +31,8 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 100
-n_step_b = 100
+n_step_f = 40
+n_step_b = 40
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 
@@ -82,12 +82,12 @@ class Model:
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
         emb_keep_prop = 0.5
-        keep_prop = 0.6
+        keep_prop = 0.5
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units)
-            if is_training:
-                f_lstm = rnn_cell.DropoutWrapper(f_lstm, output_keep_prob=keep_prop)
+            # if is_training:
+            #     f_lstm = rnn_cell.DropoutWrapper(f_lstm, output_keep_prob=keep_prop)
 
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
@@ -97,13 +97,13 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = tf.random_normal([batch_size, embedding_size], stddev=0.4)#tf.nn.dropout(emb, emb_keep_prop)
+                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=0.2)#tf.nn.dropout(emb, emb_keep_prop)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
             b_lstm = rnn_cell.BasicLSTMCell(n_units)
-            if is_training:
-                b_lstm = rnn_cell.DropoutWrapper(b_lstm, output_keep_prob=keep_prop)
+            # if is_training:
+            #     b_lstm = rnn_cell.DropoutWrapper(b_lstm, output_keep_prob=keep_prop)
 
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
@@ -113,7 +113,7 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = tf.nn.dropout(emb, emb_keep_prop)
+                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=0.2)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
         state = tf.concat(1, [f_state, b_state])
@@ -160,12 +160,12 @@ class Model:
             # accuracy
             n_correct += tf.cast(tf.equal(sense_id, tf.cast(tf.arg_max(logits, 0), tf.int32)), tf.int32)
 
-            if i == batch_size-1:
-                tf.scalar_summary(['p_target'], p_target)
-                tf.scalar_summary(['n_correct'], tf.cast(n_correct, tf.float32))
-                tf.histogram_summary('logits', logits)
-                tf.histogram_summary('W_target', W_target)
-                tf.histogram_summary('b_target', b_target)
+            # if i == batch_size-1:
+            #     tf.scalar_summary(['p_target'], p_target)
+            #     tf.scalar_summary(['n_correct'], tf.cast(n_correct, tf.float32))
+            #     tf.histogram_summary('logits', logits)
+            #     tf.histogram_summary('W_target', W_target)
+            #     tf.histogram_summary('b_target', b_target)
 
         self.cost_op = tf.div(loss, batch_size)
         self.accuracy_op = tf.div(tf.cast(n_correct, tf.float32), batch_size)
