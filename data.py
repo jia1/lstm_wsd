@@ -43,7 +43,7 @@ def one_hot_encode(length, target):
     return y
 
 
-def load_senteval2_data(path):
+def load_senteval2_data(path, is_training):
     data = []
     parser = et.XMLParser(dtd_validation=True)
     doc = et.parse(path, parser)
@@ -65,18 +65,40 @@ def load_senteval2_data(path):
                 raise ValueError('unknown child tag to instance')
 
         # if valid
-        if answer and context:
+        if (is_training and answer and context) or (not is_training and context):
             context = clean_context(context)
             x = {
                 'id': instance.get('id'),
                 'docsrc': instance.get('docsrc'),
                 'context': context,
                 'target_sense': answer,  # todo support multiple answers?
-                'target_word': instance.get('id').split('.')[0]
+                'target_word': instance.get('id').split('.')[0],
             }
             data.append(x)
 
     return data
+
+
+def get_lexelts(path):
+    items = []
+    parser = et.XMLParser(dtd_validation=True)
+    doc = et.parse(path, parser)
+    instances = doc.findall('.//lexelt')
+
+    for instance in instances:
+        items.append(instance.get('item'))
+
+    return items
+
+def target_to_lexelt_map(target_words, lexelts):
+    assert len(target_words) == len(lexelts)
+
+    res = {}
+    for lexelt in lexelts:
+        base = lexelt.split('.')[0]
+        res[base] = lexelt
+
+    return res
 
 
 def build_sense_ids_for_all(data):
@@ -151,13 +173,15 @@ def convert_to_numeric(data, word_to_id, target_word_to_id, target_sense_to_id, 
         stop_idx = ctx_ints.index(target_tag_id)
         xf = np.array(ctx_ints[:stop_idx])
         xb = np.array(ctx_ints[stop_idx+1:])[::-1]
+        instance_id = instance['id']
         target_word = instance['target_word']
         target_sense = instance['target_sense']
         target_id = target_word_to_id[target_word]
         senses = target_sense_to_id[target_id]
-        sense_id = senses[target_sense]
+        sense_id = senses[target_sense] if target_sense else -1
 
         instance = Instance()
+        instance.id = instance_id
         instance.xf = xf
         instance.xb = xb
         instance.target_id = target_id
@@ -245,11 +269,20 @@ def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b):
             xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
 
         # labels
-        target_ids = np.array([inst.target_id for inst in batch])
-        sense_ids = np.array([inst.sense_id for inst in batch])
+        target_ids = np.array([inst.target_id for inst in batch]).astype(np.int32)
+        sense_ids = np.array([inst.sense_id for inst in batch]).astype(np.int32)
         # one_hot_labels = np.vstack([inst.one_hot_labels for inst in batch])
 
-        yield xfs, xbs, target_ids.astype(np.int32), sense_ids.astype(np.int32)
+        # id
+        instance_ids = [inst.id for inst in batch]
+
+
+        yield (xfs, xbs, target_ids, sense_ids, instance_ids)
+
+
+def write_submission_file(answers):
+    pass
+
 
 
 if __name__ == '__main__':

@@ -15,8 +15,8 @@ train_path = '/data/senseval2/eng-lex-sample.training.xml'
 test_path = '/data/senseval2/eng-lex-samp.evaluation.xml'
 
 # load data
-train_data = load_senteval2_data(train_path)
-test_data = load_senteval2_data(test_path)
+train_data = load_senteval2_data(train_path, is_training=True)
+test_data = load_senteval2_data(test_path, is_training=False)
 print 'Dataset size (train/test): %d / %d' % (len(train_data), len(test_data))
 
 # build vocab utils
@@ -31,8 +31,8 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 40
-n_step_b = 40
+n_step_f = 100
+n_step_b = 100
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 
@@ -51,7 +51,6 @@ class Model:
         # self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
 
         vocab_size = len(word_to_id)
-        init_emb = init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, 100], -.1, .1)
         embedding_size = 100
 
         def embedding_initializer(vec, dtype):
@@ -82,8 +81,8 @@ class Model:
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
-        emb_keep_prop = 0.3
-        keep_prop = 0.5
+        emb_keep_prop = 0.5
+        keep_prop = 0.6
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units)
@@ -98,7 +97,7 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = tf.nn.dropout(emb, emb_keep_prop)
+                    emb = tf.random_normal([batch_size, embedding_size], stddev=0.4)#tf.nn.dropout(emb, emb_keep_prop)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
@@ -129,6 +128,8 @@ class Model:
         unbatched_sense_ids = tf.split(0, batch_size, train_sense_ids)
         one = tf.constant(1, tf.int32, [1])
 
+        # predictions = tf.Variable(tf.zeros([batch_size]), trainable=False)
+
         # make predictions for all instances in batch
         for i in range(batch_size):
             target_id = unbatched_target_ids[i]  # tf.split(train_target_ids, i, [1])
@@ -150,8 +151,9 @@ class Model:
             answer = tf.sparse_to_dense(sense_id, n_senses, 1.0, 0.0)
 
             p_target = tf.slice(p_targets, sense_id, one)
-            p_target_safe = max(0.0001, p_target)
-            self.dbg['mul'] = mul = tf.mul(answer, tf.log(p_target_safe))
+            # p_target_safe = max(0.0001, p_target)
+            self.dbg['p_targets_safe'] = p_targets_safe = max(0.0001, p_targets)
+            self.dbg['mul'] = mul = tf.mul(answer, tf.log(p_targets_safe))
             loss += - tf.reduce_sum(mul)
             # loss += - tf.log(p_target_safe)
 
@@ -204,8 +206,8 @@ def run_epoch(session, model, batch_size, data_, mode):
     summaries = []
 
     n_batches = 0
-    for batch in batch_generator(batch_size, train_data, word_to_id['<pad>'], n_step_f, n_step_b):
-        xf, xb, target_ids, sense_ids = batch
+    for batch in batch_generator(batch_size, data_, word_to_id['<pad>'], n_step_f, n_step_b):
+        xf, xb, target_ids, sense_ids, instance_ids = batch
         feeds = {
             model.inputs_f: xf,
             model.inputs_b: xb,
@@ -214,7 +216,6 @@ def run_epoch(session, model, batch_size, data_, mode):
         }
 
         # debug(model, session, feeds)
-
 
         fetches = session.run(ops, feeds)
 
@@ -250,14 +251,19 @@ if __name__ == '__main__':
 
     session = tf.Session()
     session.run(tf.initialize_all_variables())
+    saver = tf.train.Saver()
 
     summary_op = tf.merge_all_summaries()
     writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
 
     for i in range(n_epochs):
         print 'EPOCH: %d' % i
+
         summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
         run_epoch(session, model_val, batch_size, val_data, 'val')
+
         for batch_idx, summary in enumerate(summaries):
             writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
+        if i % 10 == 0:
+            saver.save(session, '/home/salomons/tmp/model/wsd', global_step=i)
