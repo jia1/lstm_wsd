@@ -57,7 +57,7 @@ class Model:
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer)
+            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
 
         n_units = 100
         state_size = 2 * n_units
@@ -81,7 +81,7 @@ class Model:
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
-        emb_keep_prop = 0.5
+        emb_noise_std = 0.4
         keep_prop = 0.5
 
         with tf.variable_scope("forward"):
@@ -97,7 +97,7 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=0.2)#tf.nn.dropout(emb, emb_keep_prop)
+                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)#tf.nn.dropout(emb, emb_keep_prop)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
@@ -113,7 +113,7 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=0.2)  # tf.nn.dropout(emb, emb_keep_prop)
+                    emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
         state = tf.concat(1, [f_state, b_state])
@@ -175,8 +175,6 @@ class Model:
             return
 
         grads = tf.gradients(self.cost_op, W_target)
-        for grad in grads:
-            print tf.shape(grad)
         tf.histogram_summary('grad_W_target', grads[0])
         tf.scalar_summary('frac_0_grad_W', tf.nn.zero_fraction(grads[0]))
 
