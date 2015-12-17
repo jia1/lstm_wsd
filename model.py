@@ -59,7 +59,7 @@ class Model:
         with tf.variable_scope('emb'):
             embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
 
-        n_units = 100
+        n_units = 300
         state_size = 2 * n_units
 
         print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
@@ -81,13 +81,14 @@ class Model:
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
-        emb_noise_std = 0.4
+        emb_noise_std = 0.05
+        input_keep_prob = 0.3
         keep_prop = 0.5
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units)
-            # if is_training:
-            #     f_lstm = rnn_cell.DropoutWrapper(f_lstm, output_keep_prob=keep_prop)
+            if is_training:
+                f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
 
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
@@ -102,8 +103,8 @@ class Model:
 
         with tf.variable_scope("backward"):
             b_lstm = rnn_cell.BasicLSTMCell(n_units)
-            # if is_training:
-            #     b_lstm = rnn_cell.DropoutWrapper(b_lstm, output_keep_prob=keep_prop)
+            if is_training:
+                b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prop)
 
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
