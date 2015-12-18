@@ -30,15 +30,39 @@ print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 lexelts = get_lexelts(train_path)
 target_word_to_lexelt = target_to_lexelt_map(target_word_to_id.keys(), lexelts)
 
+target_id_to_word = {id: word for (word, id) in target_word_to_id.iteritems()}
+target_id_to_sense_id_to_sense = [{sense_id: sense for (sense_id, sense) in target_sense_to_id[target_id]} for (target_id, sense_to_id) in enumerate(target_sense_to_id)]
+
+data_test_size = len(test_data)
+
 session = tf.Session()
-saver = tf.train.Saver()
+# saver = tf.train.Saver()
+# saver.restore(session, '/home/salomons/tmp/model/wsd1')
+test_model = model.Model(False, data_test_size, n_step_f, n_step_b, None)
 
-saver.restore(session, '/home/salomons/tmp/model/wsd1')
+result = []
 
-model = model.Model(False, 1, n_step_f, n_step_b, None)
 
-for batch in batch_generator(1, train_ndata, target_word_to_id('<pad>'), n_step_f, n_step_b):
+class Answer:
     pass
 
 
+
+for batch in batch_generator(data_test_size, train_ndata, target_word_to_id('<pad>'), n_step_f, n_step_b):
+    xfs, xbs, target_ids, sense_ids, instance_ids = batch
+    feed = {
+        model.inputs_f: xfs,
+        model.inputs_b: xbs,
+        model.train_target_ids: target_ids,
+        model.train_sense_ids: sense_ids
+    }
+    predictions = session.run(model.predictions, feed_dict=feed)
+
+    for i, predicted_sense_id in enumerate(predictions):
+        a = Answer()
+        a.target_word = target_id_to_word[target_ids[i]]
+        a.lexelt = target_word_to_lexelt[a.target_word]
+        a.instance_id = instance_ids[i]
+        a.predicted_sense = target_id_to_sense_id_to_sense[target_ids[i]][predicted_sense_id]
+        result.append(a)
 

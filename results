@@ -63,6 +63,21 @@ as 11 && use_peepholes=True
 TRAIN --> 	cost: 	1.325734, 	accuracy: 	0.560000
 VAL --> 	cost: 	1.569398, 	accuracy: 	0.496500
 
+13.
+2 * BasicLSTM, not training embedding. Only use state from L2.
+not really improvement..
+
+14.
+1*BasicLSTM and dropout=0.7 4all. Training emb.
+::: EPOCH: 6 :::
+TRAIN -->       cost:   1.171895,       accuracy:       0.622742
+VAL -->         cost:   1.516278,       accuracy:       0.543500
+
+15.
+as 15 && keep_prob = 0.2 4all.
+::: EPOCH: 11 :::
+TRAIN -->       cost:   1.329404,       accuracy:       0.584516
+VAL -->         cost:   1.426725,       accuracy:       0.550000
 
 
 todo

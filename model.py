@@ -31,7 +31,7 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 40
+n_step_f = 80
 n_step_b = 40
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
@@ -56,11 +56,11 @@ class Model:
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
+            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
 
         n_units = 200
         state_size = 2 * n_units
-        n_layers = 2
+        n_layers = 1
 
         print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
 
@@ -82,8 +82,8 @@ class Model:
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
         emb_noise_std = 0.005
-        input_keep_prob = 0.3
-        keep_prop = 0.5
+        input_keep_prob = 0.2
+        keep_prop = 0.2
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
@@ -119,8 +119,8 @@ class Model:
                 #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
-        f_state = tf.split(1, 2, f_state)[1]
-        b_state = tf.split(1, 2, b_state)[1]
+        # f_state = tf.split(1, 2, f_state)[1]
+        # b_state = tf.split(1, 2, b_state)[1]
 
         state = tf.concat(1, [f_state, b_state])
         if is_training:
@@ -134,7 +134,7 @@ class Model:
         unbatched_sense_ids = tf.split(0, batch_size, train_sense_ids)
         one = tf.constant(1, tf.int32, [1])
 
-        # predictions = tf.Variable(tf.zeros([batch_size]), trainable=False)
+        self.predictions = tf.Variable(tf.zeros([batch_size], dtype=tf.int64), trainable=False)
 
         # make predictions for all instances in batch
         for i in range(batch_size):
@@ -144,11 +144,15 @@ class Model:
             self.dbg['W'] = W = tf.reshape(tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)), [-1, 2*state_size])
             self.dbg['b'] = b = tf.slice(b_target, tf.slice(b_starts, target_id, one), tf.slice(b_lengths, target_id, one))
 
-            self.dbg['ub_states'] = unbatched_states[i]
-            self.dbg['ub_states.shape'] = tf.shape(unbatched_states[i])
+            # self.dbg['ub_states'] = unbatched_states[i]
+            # self.dbg['ub_states.shape'] = tf.shape(unbatched_states[i])
 
-            self.dbg['pre_b'] = tf.squeeze(tf.matmul(W, unbatched_states[i], False, True))
+            # self.dbg['pre_b'] = tf.squeeze(tf.matmul(W, unbatched_states[i], False, True))
             self.dbg['logits'] = logits = tf.squeeze(tf.matmul(W, unbatched_states[i], False, True)) + b
+
+            predicted_sense = tf.arg_max(logits, 0, name='prediction')
+            self.predictions = tf.scatter_update(self.predictions, tf.constant(i, dtype=tf.int64), predicted_sense)
+
             self.dbg['exp_logits'] = exp_logits = tf.exp(logits)
             summ = tf.reduce_sum(exp_logits)
             self.dbg['p_targets'] = p_targets = exp_logits / summ
@@ -172,6 +176,7 @@ class Model:
             #     tf.histogram_summary('logits', logits)
             #     tf.histogram_summary('W_target', W_target)
             #     tf.histogram_summary('b_target', b_target)
+        self.dbg['predictions'] = self.predictions
 
         self.cost_op = tf.div(loss, batch_size)
         self.accuracy_op = tf.div(tf.cast(n_correct, tf.float32), batch_size)
@@ -180,9 +185,9 @@ class Model:
         if not is_training:
             return
 
-        grads = tf.gradients(self.cost_op, W_target)
-        tf.histogram_summary('grad_W_target', grads[0])
-        tf.scalar_summary('frac_0_grad_W', tf.nn.zero_fraction(grads[0]))
+        # grads = tf.gradients(self.cost_op, W_target)
+        # tf.histogram_summary('grad_W_target', grads[0])
+        # tf.scalar_summary('frac_0_grad_W', tf.nn.zero_fraction(grads[0]))
 
         print 'TRAINABLE VARIABLES'
         tvars = tf.trainable_variables()
@@ -191,7 +196,7 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        optimizer = tf.train.MomentumOptimizer(1., 0.9)
+        optimizer = tf.train.MomentumOptimizer(1., 0.1)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
         # self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
 
@@ -200,7 +205,7 @@ class Model:
 
 def run_epoch(session, model, batch_size, data_, mode):
     if mode == 'train':
-        ops = [model.cost_op, model.accuracy_op, model.summary_op, model.train_op]
+        ops = [model.cost_op, model.accuracy_op, model.train_op]
     elif mode == 'val':
         ops = [model.cost_op, model.accuracy_op]
     else:
@@ -221,13 +226,14 @@ def run_epoch(session, model, batch_size, data_, mode):
         }
 
         # debug(model, session, feeds)
+        # debug_op(model.predictions, session, feeds)
 
         fetches = session.run(ops, feeds)
 
         cost += fetches[0]
         accuracy += fetches[1]
-        if mode == 'train':
-            summaries.append(fetches[2])
+        # if mode == 'train':
+        #     summaries.append(fetches[2])
         n_batches += 1
 
     print '%s --> \tcost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
@@ -238,13 +244,17 @@ def run_epoch(session, model, batch_size, data_, mode):
 
 def debug(model, session, feed_dict):
     for name, op in model.dbg.iteritems():
-        print name
         value = session.run(op, feed_dict)
-        print value
+        print '::: %s :::: \n%s' % (name, np.array_str(value))
+
+
+def debug_op(op, session, feed_dict):
+    value = session.run(op, feed_dict)
+    print value
 
 if __name__ == '__main__':
     n_epochs = 500
-    batch_size = 200
+    batch_size = 100
     train_data, val_data = train_test_split(train_ndata)
 
     init_emb = fill_with_gloves(word_to_id, 100)
@@ -258,8 +268,7 @@ if __name__ == '__main__':
     session.run(tf.initialize_all_variables())
     saver = tf.train.Saver()
 
-    summary_op = tf.merge_all_summaries()
-    writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
+    # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
 
     for i in range(n_epochs):
         print '::: EPOCH: %d :::' % i
@@ -267,8 +276,8 @@ if __name__ == '__main__':
         summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
         run_epoch(session, model_val, batch_size, val_data, 'val')
 
-        for batch_idx, summary in enumerate(summaries):
-            writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
+        # for batch_idx, summary in enumerate(summaries):
+        #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
-        if i % 10 == 0:
+        if i % 1 == 0:
             saver.save(session, '/home/salomons/tmp/model/wsd', global_step=i)
