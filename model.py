@@ -35,7 +35,6 @@ n_step_f = 40
 n_step_b = 40
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
-
 class Model:
     def __init__(self, is_training, batch_size, n_step_f, n_step_b, init_word_vecs=None):
         self.dbg = {}
@@ -57,7 +56,7 @@ class Model:
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
+            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
 
         n_units = 200
         state_size = 2 * n_units
@@ -86,9 +85,10 @@ class Model:
         keep_prop = 0.5
 
         with tf.variable_scope("forward"):
-            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)
+            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
+            f_lstm = rnn_cell.MultiRNNCell([f_lstm] * 2)
 
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
@@ -102,9 +102,10 @@ class Model:
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
-            b_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)
+            b_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
+            b_lstm = rnn_cell.MultiRNNCell([b_lstm] * 2)
 
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
@@ -186,7 +187,7 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        optimizer = tf.train.MomentumOptimizer(1.0, 0.9)
+        optimizer = tf.train.MomentumOptimizer(1., 0.9)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
         # self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
 
@@ -225,7 +226,7 @@ def run_epoch(session, model, batch_size, data_, mode):
             summaries.append(fetches[2])
         n_batches += 1
 
-    print '%s:: \tcost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
+    print '%s --> \tcost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
 
     if mode == 'train':
         return summaries

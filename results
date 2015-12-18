@@ -45,6 +45,23 @@ As 7 + Gaussian noise on embeddings.
 9.
 As 8 + forget_bias = 0 in lstm.
 
+10.
+as 9 & not training embeddings.
+::: EPOCH: 8 :::
+TRAIN:: 	cost: 	1.290015, 	accuracy: 	0.559839
+VAL:: 	cost: 	1.487941, 	accuracy: 	0.541000
+
+11.
+as 10 && BasicLSTM -> LSTM
+::: EPOCH: 7 :::
+TRAIN:: 	cost: 	1.349587, 	accuracy: 	0.547097
+VAL:: 	cost: 	1.588297, 	accuracy: 	0.504000
+
+12.
+as 11 && use_peepholes=True
+::: EPOCH: 8 :::
+TRAIN --> 	cost: 	1.325734, 	accuracy: 	0.560000
+VAL --> 	cost: 	1.569398, 	accuracy: 	0.496500
 
 
 
