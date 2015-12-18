@@ -34,11 +34,16 @@ EPOCH: 41
 Cost (train/val): 0.727260/2.038966, Accuracy (train/val): 0.742097/0.456000
 
 7.
-Dropout on embeddings
+As 6 + Dropout on embeddings.
 EPOCH: 53
 TRAIN ::: cost: 0.687805, accuracy: 0.754677
 VAL ::: cost: 2.504641, accuracy: 0.392258
 
+8.
+As 7 + Gaussian noise on embeddings.
+
+9.
+As 8 + forget_bias = 0 in lstm.
 
 
 

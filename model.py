@@ -86,7 +86,7 @@ class Model:
         keep_prop = 0.5
 
         with tf.variable_scope("forward"):
-            f_lstm = rnn_cell.BasicLSTMCell(n_units)
+            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
 
@@ -102,7 +102,7 @@ class Model:
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
-            b_lstm = rnn_cell.BasicLSTMCell(n_units)
+            b_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)
             if is_training:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
 
@@ -184,11 +184,12 @@ class Model:
         for tvar in tvars:
             print tvar.name
 
-        # max_grad_norm = 10
-        # grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        # optimizer = tf.train.AdagradOptimizer(.5)
-        # self.train_op = optimizer.apply_gradients(zip(grads, tvars))
-        self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
+        max_grad_norm = 10
+        grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
+        optimizer = tf.train.MomentumOptimizer(1.0, 0.9)
+        self.train_op = optimizer.apply_gradients(zip(grads, tvars))
+        # self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
+
         self.summary_op = tf.merge_all_summaries()
 
 
@@ -224,7 +225,7 @@ def run_epoch(session, model, batch_size, data_, mode):
             summaries.append(fetches[2])
         n_batches += 1
 
-    print '::: %s \t::: cost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
+    print '%s:: \tcost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost / n_batches, accuracy / n_batches)
 
     if mode == 'train':
         return summaries
@@ -256,7 +257,7 @@ if __name__ == '__main__':
     writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
 
     for i in range(n_epochs):
-        print 'EPOCH: %d' % i
+        print '::: EPOCH: %d :::' % i
 
         summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
         run_epoch(session, model_val, batch_size, val_data, 'val')
