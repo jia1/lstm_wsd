@@ -60,6 +60,7 @@ class Model:
 
         n_units = 200
         state_size = 2 * n_units
+        n_layers = 2
 
         print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
 
@@ -88,7 +89,7 @@ class Model:
             f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
-            f_lstm = rnn_cell.MultiRNNCell([f_lstm] * 2)
+            f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
 
             f_state = f_lstm.zero_state(batch_size, tf.float32)
 
@@ -105,7 +106,7 @@ class Model:
             b_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
-            b_lstm = rnn_cell.MultiRNNCell([b_lstm] * 2)
+            b_lstm = rnn_cell.MultiRNNCell([b_lstm] * n_layers)
 
             b_state = b_lstm.zero_state(batch_size, tf.float32)
 
@@ -117,6 +118,9 @@ class Model:
                 # if is_training:
                 #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
+
+        f_state = tf.split(1, 2, f_state)[1]
+        b_state = tf.split(1, 2, b_state)[1]
 
         state = tf.concat(1, [f_state, b_state])
         if is_training:
