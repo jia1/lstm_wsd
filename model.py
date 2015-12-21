@@ -82,8 +82,8 @@ class Model:
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
         emb_noise_std = 0.005
-        input_keep_prob = 0.2
-        keep_prop = 0.2
+        input_keep_prob = 0.1
+        keep_prop = 0.1
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
@@ -264,9 +264,10 @@ if __name__ == '__main__':
     with tf.variable_scope('model', reuse=True):
         model_val = Model(False, batch_size, n_step_f, n_step_b, init_emb)
 
+    saver = tf.train.Saver(tf.all_variables(), max_to_keep=100)
+
     session = tf.Session()
     session.run(tf.initialize_all_variables())
-    saver = tf.train.Saver()
 
     # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
 
@@ -280,4 +281,4 @@ if __name__ == '__main__':
         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
         if i % 1 == 0:
-            saver.save(session, '/home/salomons/tmp/model/wsd', global_step=i)
+            print saver.save(session, '/home/salomons/tmp/model/wsd.ckpt', global_step=i)
