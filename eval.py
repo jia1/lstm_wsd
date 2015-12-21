@@ -45,8 +45,7 @@ with tf.Session() as session:
         model = Model(False, batch_size, n_step_f, n_step_b, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-0')
-
+    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-61')
 
 
     class Answer:
@@ -62,6 +61,7 @@ with tf.Session() as session:
             model.train_target_ids: target_ids,
             model.train_sense_ids: sense_ids
         }
+
         predictions = session.run(model.predictions, feed_dict=feed)
 
         for i, predicted_sense_id in enumerate(predictions):

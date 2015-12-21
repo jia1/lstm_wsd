@@ -255,7 +255,7 @@ def debug_op(op, session, feed_dict):
 if __name__ == '__main__':
     n_epochs = 500
     batch_size = 100
-    train_data, val_data = train_test_split(train_ndata)
+    train_data, val_data = train_test_split(train_ndata, test_size=0)
 
     init_emb = fill_with_gloves(word_to_id, 100)
 
@@ -275,7 +275,7 @@ if __name__ == '__main__':
         print '::: EPOCH: %d :::' % i
 
         summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
-        run_epoch(session, model_val, batch_size, val_data, 'val')
+        # run_epoch(session, model_val, batch_size, val_data, 'val')
 
         # for batch_idx, summary in enumerate(summaries):
         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
