@@ -31,8 +31,8 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 80
-n_step_b = 40
+n_step_f = 200
+n_step_b = 100
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 class Model:
@@ -50,7 +50,7 @@ class Model:
         # self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
 
         vocab_size = len(word_to_id)
-        embedding_size = 100
+        embedding_size = 50
 
         def embedding_initializer(vec, dtype):
             return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
@@ -58,11 +58,18 @@ class Model:
         with tf.variable_scope('emb'):
             embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
 
-        n_units = 20
-        state_size = 2 * n_units
-        n_layers = 3
+        mean_embeddings = tf.reduce_mean(embeddings, 0, keep_dims=True)
+        std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
 
-        print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
+        n_units = 10
+        state_size = n_units
+        n_layers = 1
+
+        emb_base_std = 2.0
+        input_keep_prob = 0.5
+        keep_prop = 0.5
+
+        print 'Avg n senses per target word: ' + str(tot_n_senses / len(n_senses_from_target_id))
 
         n_senses_sorted_by_target_id = [n_senses_from_target_id[target_id] for target_id
                                         in range(len(n_senses_from_target_id))]
@@ -81,12 +88,10 @@ class Model:
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
-        emb_noise_std = 0.005
-        input_keep_prob = 0.9
-        keep_prop = 0.9
+
 
         with tf.variable_scope("forward"):
-            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
+            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)    # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
             f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
@@ -98,8 +103,8 @@ class Model:
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
-                # if is_training:
-                #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)#tf.nn.dropout(emb, emb_keep_prop)
+                if is_training:
+                    emb = emb + std_embeddings * tf.random_normal([batch_size, embedding_size], stddev=emb_base_std)
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
@@ -114,13 +119,13 @@ class Model:
             for time_step, inputs_ in enumerate(inputs_b):
                 if time_step > 0:
                     tf.get_variable_scope().reuse_variables()
-                self.dbg['emb'] = emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
-                # if is_training:
-                #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
+                emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
+                if is_training:
+                    emb = emb + std_embeddings * tf.random_normal([batch_size, embedding_size], stddev=emb_base_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
-        f_state = tf.split(1, n_layers, f_state)[-1]
-        b_state = tf.split(1, n_layers, b_state)[-1]
+        f_state = tf.slice(tf.split(1, n_layers, f_state)[-1], [0, n_units], [batch_size, n_units])
+        b_state = tf.slice(tf.split(1, n_layers, b_state)[-1], [0, n_units], [batch_size, n_units])
 
         state = tf.concat(1, [f_state, b_state])
         if is_training:
@@ -257,7 +262,7 @@ if __name__ == '__main__':
     batch_size = 100
     train_data, val_data = train_test_split(train_ndata, test_size=0.2)
 
-    init_emb = fill_with_gloves(word_to_id, 100)
+    init_emb = fill_with_gloves(word_to_id, 50)
 
     with tf.variable_scope('model', reuse=None):
         model_train = Model(True, batch_size, n_step_f, n_step_b, init_emb)
