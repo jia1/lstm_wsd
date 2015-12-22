@@ -58,9 +58,9 @@ class Model:
         with tf.variable_scope('emb'):
             embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
 
-        n_units = 200
+        n_units = 20
         state_size = 2 * n_units
-        n_layers = 1
+        n_layers = 3
 
         print 'Avg n senses: ' + str(tot_n_senses / len(n_senses_from_target_id))
 
@@ -82,8 +82,8 @@ class Model:
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
 
         emb_noise_std = 0.005
-        input_keep_prob = 0.1
-        keep_prop = 0.1
+        input_keep_prob = 0.9
+        keep_prop = 0.9
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
@@ -119,8 +119,8 @@ class Model:
                 #     emb = emb + tf.random_normal([batch_size, embedding_size], stddev=emb_noise_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
-        # f_state = tf.split(1, 2, f_state)[1]
-        # b_state = tf.split(1, 2, b_state)[1]
+        f_state = tf.split(1, n_layers, f_state)[-1]
+        b_state = tf.split(1, n_layers, b_state)[-1]
 
         state = tf.concat(1, [f_state, b_state])
         if is_training:
@@ -255,7 +255,7 @@ def debug_op(op, session, feed_dict):
 if __name__ == '__main__':
     n_epochs = 500
     batch_size = 100
-    train_data, val_data = train_test_split(train_ndata, test_size=0)
+    train_data, val_data = train_test_split(train_ndata, test_size=0.2)
 
     init_emb = fill_with_gloves(word_to_id, 100)
 
@@ -275,7 +275,7 @@ if __name__ == '__main__':
         print '::: EPOCH: %d :::' % i
 
         summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
-        # run_epoch(session, model_val, batch_size, val_data, 'val')
+        run_epoch(session, model_val, batch_size, val_data, 'val')
 
         # for batch_idx, summary in enumerate(summaries):
         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
