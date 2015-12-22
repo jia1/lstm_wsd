@@ -68,8 +68,8 @@ class Model:
         state_size = n_units
         n_layers = 1
 
-        emb_base_std = 1.5
-        input_keep_prob = .8
+        emb_base_std = 1.1
+        input_keep_prob = 0.9
         keep_prop = 0.5
 
         print 'Avg n senses per target word: ' + str(tot_n_senses / len(n_senses_from_target_id))
