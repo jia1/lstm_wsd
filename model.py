@@ -46,27 +46,30 @@ class Model:
         self.train_target_ids = train_target_ids = tf.placeholder(tf.int32, shape=[batch_size])
         self.train_sense_ids = train_sense_ids = tf.placeholder(tf.int32, shape=[batch_size])
 
+        global_step = tf.Variable(1.0, trainable=False)
+        lr_start = 2.0
+
         tot_n_senses = sum(n_senses_from_target_id.values())
         # self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
 
         vocab_size = len(word_to_id)
-        embedding_size = 50
+        embedding_size = 100
 
         def embedding_initializer(vec, dtype):
             return init_word_vecs if init_word_vecs is not None else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
+            self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
 
         mean_embeddings = tf.reduce_mean(embeddings, 0, keep_dims=True)
         self.dbg['std_emb'] = std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
 
-        n_units = 20
+        n_units = 30
         state_size = n_units
         n_layers = 1
 
-        emb_base_std = .0
-        input_keep_prob = 1.0
+        emb_base_std = 1.5
+        input_keep_prob = .8
         keep_prop = 0.5
 
         print 'Avg n senses per target word: ' + str(tot_n_senses / len(n_senses_from_target_id))
@@ -199,14 +202,15 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        optimizer = tf.train.MomentumOptimizer(1., 0.1)
-        self.train_op = optimizer.apply_gradients(zip(grads, tvars))
+        lr = tf.train.exponential_decay(lr_start, global_step, batch_size, 0.96)
+        optimizer = tf.train.MomentumOptimizer(lr, 0.1)
+        self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
         # self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
 
         self.summary_op = tf.merge_all_summaries()
 
 
-def run_epoch(session, model, batch_size, data_, mode):
+def run_epoch(session, model, batch_size, data_, mode, epoch):
     if mode == 'train':
         ops = [model.cost_op, model.accuracy_op, model.train_op]
     elif mode == 'val':
@@ -256,11 +260,11 @@ def debug_op(op, session, feed_dict):
     print value
 
 if __name__ == '__main__':
-    n_epochs = 500
+    n_epochs = 300
     batch_size = 100
     train_data, val_data = train_test_split(train_ndata, test_size=0.2)
 
-    init_emb = fill_with_gloves(word_to_id, 50)
+    init_emb = fill_with_gloves(word_to_id, 100)
 
     with tf.variable_scope('model', reuse=None):
         model_train = Model(True, batch_size, n_step_f, n_step_b, init_emb)
@@ -269,7 +273,10 @@ if __name__ == '__main__':
 
     saver = tf.train.Saver(tf.all_variables(), max_to_keep=100)
 
-    session = tf.Session()
+    tf_config=tf.ConfigProto(inter_op_parallelism_threads=4,
+                   intra_op_parallelism_threads=4)
+
+    session = tf.Session(config=tf_config)
     session.run(tf.initialize_all_variables())
 
     # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
@@ -277,8 +284,8 @@ if __name__ == '__main__':
     for i in range(n_epochs):
         print '::: EPOCH: %d :::' % i
 
-        summaries = run_epoch(session, model_train, batch_size, train_data, 'train')
-        run_epoch(session, model_val, batch_size, val_data, 'val')
+        summaries = run_epoch(session, model_train, batch_size, train_data, 'train', i)
+        run_epoch(session, model_val, batch_size, val_data, 'val', i)
 
         # for batch_idx, summary in enumerate(summaries):
         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
