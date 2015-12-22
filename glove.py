@@ -21,7 +21,7 @@ def fill_with_gloves(word_to_id, emb_size, wordvecs=None):
         wordvecs = load_glove(emb_size)
 
     n_words = len(word_to_id)
-    res = np.zeros([n_words, emb_size])
+    res = np.zeros([n_words, emb_size], dtype=np.float32)
     n_not_found = 0
     for word, id in word_to_id.iteritems():
         if word in wordvecs:
@@ -30,5 +30,7 @@ def fill_with_gloves(word_to_id, emb_size, wordvecs=None):
             n_not_found += 1
             res[id, :] = np.random.normal(0.0, 0.1, emb_size)
     print 'n words not found in glove word vectors: ' + str(n_not_found)
+
+    return res
 
 

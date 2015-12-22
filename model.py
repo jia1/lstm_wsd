@@ -31,8 +31,8 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 200
-n_step_b = 100
+n_step_f = 80
+n_step_b = 40
 print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 class Model:
@@ -53,20 +53,20 @@ class Model:
         embedding_size = 50
 
         def embedding_initializer(vec, dtype):
-            return init_word_vecs if init_word_vecs else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
+            return init_word_vecs if init_word_vecs is not None else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
+            self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=False)
 
         mean_embeddings = tf.reduce_mean(embeddings, 0, keep_dims=True)
-        std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
+        self.dbg['std_emb'] = std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
 
-        n_units = 10
+        n_units = 20
         state_size = n_units
         n_layers = 1
 
-        emb_base_std = 2.0
-        input_keep_prob = 0.5
+        emb_base_std = .0
+        input_keep_prob = 1.0
         keep_prop = 0.5
 
         print 'Avg n senses per target word: ' + str(tot_n_senses / len(n_senses_from_target_id))
@@ -87,8 +87,6 @@ class Model:
         with tf.variable_scope('target_params', initializer=tf.random_uniform_initializer(-.1, .1)):
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
-
-
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)    # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
