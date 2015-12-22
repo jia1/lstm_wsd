@@ -28,15 +28,31 @@ print 'Vocabulary size: %d' % len(word_to_id)
 train_ndata = convert_to_numeric(train_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 
+
 # calc max sentence length forwards and backwards
 # n_step_f = max([len(d.xf) for d in train_ndata])
 # n_step_b = max([len(d.xb) for d in train_ndata])
-n_step_f = 80
-n_step_b = 40
-print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
 class Model:
-    def __init__(self, is_training, batch_size, n_step_f, n_step_b, init_word_vecs=None):
+    def __init__(self, is_training, conf, init_word_vecs=None):
+        batch_size = conf['batch_size']
+        n_step_f = conf['n_step_f']
+        n_step_b = conf['n_step_b']
+
+        n_units = conf['n_lstm_units']
+        state_size = n_units
+        n_layers = conf['n_layers']
+
+        emb_base_std = conf['emb_base_std']
+        input_keep_prob = conf['input_keep_prob']
+        keep_prob = conf['keep_prob']
+        embedding_size = conf['embedding_size']
+
+        lr_start = 2.0
+        lr_decay_factor = 0.96
+
+        print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
+
         self.dbg = {}
         self.batch_size = batch_size
         self.is_training = is_training
@@ -47,30 +63,22 @@ class Model:
         self.train_sense_ids = train_sense_ids = tf.placeholder(tf.int32, shape=[batch_size])
 
         global_step = tf.Variable(1.0, trainable=False)
-        lr_start = 2.0
 
         tot_n_senses = sum(n_senses_from_target_id.values())
         # self.train_labels = labels = tf.placeholder(tf.float32, shape=[batch_size, tot_n_senses])
 
         vocab_size = len(word_to_id)
-        embedding_size = 100
 
         def embedding_initializer(vec, dtype):
-            return init_word_vecs if init_word_vecs is not None else tf.random_uniform([vocab_size, embedding_size], -.1, .1, dtype)
+            return init_word_vecs if init_word_vecs is not None else tf.random_uniform([vocab_size, embedding_size],
+                                                                                       -.1, .1, dtype)
 
         with tf.variable_scope('emb'):
-            self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size], initializer=embedding_initializer, trainable=True)
+            self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size],
+                                                                  initializer=embedding_initializer, trainable=True)
 
         mean_embeddings = tf.reduce_mean(embeddings, 0, keep_dims=True)
         self.dbg['std_emb'] = std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
-
-        n_units = 30
-        state_size = n_units
-        n_layers = 1
-
-        emb_base_std = 1.1
-        input_keep_prob = 0.9
-        keep_prop = 0.5
 
         print 'Avg n senses per target word: ' + str(tot_n_senses / len(n_senses_from_target_id))
 
@@ -89,10 +97,12 @@ class Model:
 
         with tf.variable_scope('target_params', initializer=tf.random_uniform_initializer(-.1, .1)):
             W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
-            b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32, initializer=tf.constant_initializer(0.0))
+            b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32,
+                                       initializer=tf.constant_initializer(0.0))
 
         with tf.variable_scope("forward"):
-            f_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.)    # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
+            f_lstm = rnn_cell.BasicLSTMCell(n_units,
+                                            forget_bias=0.)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
             f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
@@ -109,7 +119,8 @@ class Model:
                 _, f_state = f_lstm(emb, f_state)
 
         with tf.variable_scope("backward"):
-            b_lstm = rnn_cell.BasicLSTMCell(n_units, forget_bias=0.) # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
+            b_lstm = rnn_cell.BasicLSTMCell(n_units,
+                                            forget_bias=0.)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
             b_lstm = rnn_cell.MultiRNNCell([b_lstm] * n_layers)
@@ -122,7 +133,8 @@ class Model:
                     tf.get_variable_scope().reuse_variables()
                 emb = tf.nn.embedding_lookup(embeddings, tf.squeeze(inputs_))
                 if is_training:
-                    emb = emb + std_embeddings * tf.random_normal([batch_size, embedding_size], stddev=emb_base_std)  # tf.nn.dropout(emb, emb_keep_prop)
+                    emb = emb + std_embeddings * tf.random_normal([batch_size, embedding_size],
+                                                                  stddev=emb_base_std)  # tf.nn.dropout(emb, emb_keep_prop)
                 _, b_state = b_lstm(emb, b_state)
 
         f_state = tf.slice(tf.split(1, n_layers, f_state)[-1], [0, n_units], [batch_size, n_units])
@@ -130,7 +142,7 @@ class Model:
 
         state = tf.concat(1, [f_state, b_state])
         if is_training:
-            state = tf.nn.dropout(state, keep_prop)
+            state = tf.nn.dropout(state, keep_prob)
 
         loss = tf.Variable(0., trainable=False)
         n_correct = tf.Variable(0, trainable=False)
@@ -147,8 +159,11 @@ class Model:
             target_id = unbatched_target_ids[i]  # tf.split(train_target_ids, i, [1])
             sense_id = unbatched_sense_ids[i]
 
-            self.dbg['W'] = W = tf.reshape(tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)), [-1, 2*state_size])
-            self.dbg['b'] = b = tf.slice(b_target, tf.slice(b_starts, target_id, one), tf.slice(b_lengths, target_id, one))
+            self.dbg['W'] = W = tf.reshape(
+                tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)),
+                [-1, 2 * state_size])
+            self.dbg['b'] = b = tf.slice(b_target, tf.slice(b_starts, target_id, one),
+                                         tf.slice(b_lengths, target_id, one))
 
             # self.dbg['ub_states'] = unbatched_states[i]
             # self.dbg['ub_states.shape'] = tf.shape(unbatched_states[i])
@@ -202,15 +217,14 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        lr = tf.train.exponential_decay(lr_start, global_step, batch_size, 0.96)
+        lr = tf.train.exponential_decay(lr_start, global_step, batch_size, lr_decay_factor)
         optimizer = tf.train.MomentumOptimizer(lr, 0.1)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
-        # self.train_op = tf.train.AdagradOptimizer(0.2).minimize(self.error_op)
 
         self.summary_op = tf.merge_all_summaries()
 
 
-def run_epoch(session, model, batch_size, data_, mode, epoch):
+def run_epoch(session, model, conf, data_, mode, epoch):
     if mode == 'train':
         ops = [model.cost_op, model.accuracy_op, model.train_op]
     elif mode == 'val':
@@ -223,7 +237,7 @@ def run_epoch(session, model, batch_size, data_, mode, epoch):
     summaries = []
 
     n_batches = 0
-    for batch in batch_generator(batch_size, data_, word_to_id['<pad>'], n_step_f, n_step_b):
+    for batch in batch_generator(conf['batch_size'], data_, word_to_id['<pad>'], conf['n_step_f'], conf['n_step_b']):
         xf, xb, target_ids, sense_ids, instance_ids = batch
         feeds = {
             model.inputs_f: xf,
@@ -259,22 +273,34 @@ def debug_op(op, session, feed_dict):
     value = session.run(op, feed_dict)
     print value
 
+
 if __name__ == '__main__':
     n_epochs = 300
-    batch_size = 100
+    conf = {
+        'batch_size': 100,
+        'n_step_f': 80,
+        'n_step_b': 80,
+        'n_lstm_units': 20,
+        'n_layers': 1,
+        'emb_base_std': 0.5,
+        'input_keep_prob': 1.0,
+        'keep_prob': 0.5,
+        'embedding_size': 100
+    }
+
     train_data, val_data = train_test_split(train_ndata, test_size=0.2)
 
     init_emb = fill_with_gloves(word_to_id, 100)
 
     with tf.variable_scope('model', reuse=None):
-        model_train = Model(True, batch_size, n_step_f, n_step_b, init_emb)
+        model_train = Model(True, conf, init_emb)
     with tf.variable_scope('model', reuse=True):
-        model_val = Model(False, batch_size, n_step_f, n_step_b, init_emb)
+        model_val = Model(False, conf, init_emb)
 
     saver = tf.train.Saver(tf.all_variables(), max_to_keep=100)
 
-    tf_config=tf.ConfigProto(inter_op_parallelism_threads=4,
-                   intra_op_parallelism_threads=4)
+    tf_config = tf.ConfigProto(inter_op_parallelism_threads=4,
+                               intra_op_parallelism_threads=4)
 
     session = tf.Session(config=tf_config)
     session.run(tf.initialize_all_variables())
@@ -284,8 +310,8 @@ if __name__ == '__main__':
     for i in range(n_epochs):
         print '::: EPOCH: %d :::' % i
 
-        summaries = run_epoch(session, model_train, batch_size, train_data, 'train', i)
-        run_epoch(session, model_val, batch_size, val_data, 'val', i)
+        summaries = run_epoch(session, model_train, conf, train_data, 'train', i)
+        run_epoch(session, model_val, conf, val_data, 'val', i)
 
         # for batch_idx, summary in enumerate(summaries):
         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)

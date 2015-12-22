@@ -147,7 +147,7 @@ def build_vocab(data):
         counter.update(split_context(elem['context']))
 
     # remove infrequent words
-    min_freq = 5
+    min_freq = 2
     filtered = [item for item in counter.items() if item[1]>=min_freq]
 
     count_pairs = sorted(filtered, key=lambda x: -x[1])

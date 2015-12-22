@@ -45,7 +45,7 @@ with tf.Session() as session:
         model = Model(False, batch_size, n_step_f, n_step_b, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-80')
+    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-58')
 
 
     class Answer:
