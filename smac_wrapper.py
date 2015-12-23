@@ -19,24 +19,27 @@ configMap = dict((name, value) for name, value in zip(params[::2], params[1::2])
 binary = "/home/salomons/project/wsd/hyper.py"
 cmd = "%s --seed %d --model-stdout --dimacs %s --tmout %d" %(binary, seed, instance, cutoff)
 for name, value in configMap.items():
-    cmd += " -%s %s" % (name,  value)
+    cmd += " -%s" % name
+    raw = " %s" % value
+    cmd += raw.replace("\'", '')
 
 # Execute the call and track its runtime.
-print(cmd)
+# print(cmd)
 start_time = time.time()
-io = Popen(cmd.split(" "), stdout=PIPE, stderr=PIPE, shell=True)
+io = Popen(cmd.split(" "), stdout=PIPE, stderr=PIPE)
 (stdout_, stderr_) = io.communicate()
 runtime = time.time() - start_time
 
 # Very simply parsing of Spear's output. Note that in practice we would check the found solution to guard against bugs.
-status = "CRASHED"
-if (re.search('s UNKNOWN', stdout_)):
-    status = 'TIMEOUT'
-if (re.search('Res', stdout_)) or (re.search('s UNSATISFIABLE', stdout_)):
-    status = 'SUCCESS'
 
-import time
-quality = time.time()
+try:
+    best = re.findall('NEW BEST: 0.\d+', stdout_)[-1].split(' ')[-1]
+    status = 'SUCCESS'
+except:
+    best = 0
+    status = "CRASHED"
+    print stderr_
+
 
 # Output result for SMAC.
-print("Result for SMAC: %s, 0, 0, %f, %s" % (status, float(quality), str(seed)))
+print("Result for SMAC: %s, 0, 0, %f, %s" % (status, - float(best), str(seed)))
