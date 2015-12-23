@@ -47,7 +47,7 @@ start_time = time.time()
 
 # config
 n_epochs = 100
-max_sec = 30 * 60
+max_sec = 40 * 60
 train_path = '/data/senseval2/eng-lex-sample.training.xml'
 seed = int(args.seed)
 tf.set_random_seed(seed)
@@ -86,6 +86,7 @@ for i in range(n_epochs):
     if acc_val > best:
         print 'NEW BEST: %f' % acc_val
         i_since_last_best = 0
+        best = acc_val
     else:
         i_since_last_best += 1
 
@@ -96,6 +97,4 @@ for i in range(n_epochs):
     # timeout
     if time.time() - start_time > max_sec:
         break
-
-
 
