@@ -41,33 +41,32 @@ def debug_op(op, session, feed_dict):
     print value
 
 n_epochs = 300
+
 conf = {
     'batch_size': 100,
-    'n_step_f': 80,
-    'n_step_b': 80,
-    'n_lstm_units': 20,
+    'n_step_f': 147,
+    'n_step_b': 42,
+    'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.5,
-    'input_keep_prob': 1.0,
-    'keep_prob': 0.5,
-    'embedding_size': 100
+    'emb_base_std': 0.10988,
+    'input_keep_prob': .594688,
+    'keep_prob': 0.193,
+    'embedding_size': 100,
+    'train_embeddings': True
 }
 
-train_data, val_data = train_test_split(train_ndata, test_size=0.2)
+train_data, val_data = train_test_split(train_ndata, test_size=0.0)
 
 init_emb = fill_with_gloves(word_to_id, 100)
 
 with tf.variable_scope('model', reuse=None):
-    model_train = Model(True, conf, init_emb)
+    model_train = Model(True, conf, n_senses_from_target_id, word_to_id, init_emb)
 with tf.variable_scope('model', reuse=True):
-    model_val = Model(False, conf, init_emb)
+    model_val = Model(False, conf, n_senses_from_target_id, word_to_id, init_emb)
 
 saver = tf.train.Saver(tf.all_variables(), max_to_keep=100)
 
-tf_config = tf.ConfigProto(inter_op_parallelism_threads=4,
-                           intra_op_parallelism_threads=4)
-
-session = tf.Session(config=tf_config)
+session = tf.Session()
 session.run(tf.initialize_all_variables())
 
 # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
@@ -75,11 +74,11 @@ session.run(tf.initialize_all_variables())
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
-    summaries = run_epoch(session, model_train, conf, train_data, 'train', i)
-    run_epoch(session, model_val, conf, val_data, 'val', i)
+    summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
+    # run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
-    if i % 1 == 0:
+    if i % 5 == 0:
         print saver.save(session, '/home/salomons/tmp/model/wsd.ckpt', global_step=i)
