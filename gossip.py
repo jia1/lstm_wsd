@@ -5,12 +5,12 @@ import sys
 import smtplib
 from email.mime.text import MIMEText
 
-if len(sys.argv) < 2:
-    sys.exit('password...')
+if len(sys.argv) < 3:
+    sys.exit('run_id password')
 
-pwd = sys.argv[1]
+pwd = sys.argv[2]
+run_id = sys.argv[1] 
 
-run_id = 839023172
 path = '/home/salomons/project/wsd/smac-output/scenario/live-rundata-' + str(run_id) + '.json'
 
 best = 1000.0
