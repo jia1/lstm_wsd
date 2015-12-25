@@ -12,12 +12,12 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-train_path = '/data/senseval2/eng-lex-sample.training.xml'
-test_path = '/data/senseval2/eng-lex-samp.evaluation.xml'
+train_path = '/data/senseval3/eng-lex/EnglishLS.train.mod'
+test_path = '/data/senseval3/eng-lex/EnglishLS.test.mod'
 
 # load data
-train_data = load_senteval2_data(train_path, is_training=True)
-test_data = load_senteval2_data(test_path, is_training=False)
+train_data = load_senteval3_data(train_path, is_training=True)
+test_data = load_senteval3_data(test_path, is_training=False)
 print 'Dataset size (train/test): %d / %d' % (len(train_data), len(test_data))
 
 # build vocab utils
@@ -55,7 +55,7 @@ conf = {
     'train_embeddings': True
 }
 
-train_data, val_data = train_test_split(train_ndata, test_size=0.0)
+train_data, val_data = train_test_split(train_ndata, test_size=0.2)
 
 init_emb = fill_with_gloves(word_to_id, 100)
 
@@ -75,7 +75,7 @@ for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
     summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
-    # run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
+    run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)

@@ -43,9 +43,13 @@ def one_hot_encode(length, target):
     return y
 
 
-def load_senteval2_data(path, is_training):
+def load_senteval3_data(path, is_training):
+    return load_senteval2_data(path, is_training, False)
+
+
+def load_senteval2_data(path, is_training, dtd_validation=True):
     data = []
-    parser = et.XMLParser(dtd_validation=True)
+    parser = et.XMLParser(dtd_validation=dtd_validation)
     doc = et.parse(path, parser)
     instances = doc.findall('.//instance')
 
