@@ -4,6 +4,9 @@ import sys
 
 import smtplib
 from email.mime.text import MIMEText
+import socket
+
+host_name = socket.gethostname()
 
 if len(sys.argv) < 3:
     sys.exit('run_id password')
@@ -18,7 +21,7 @@ best = 1000.0
 
 def send_email(best):
     print 'New best found: %f. Sending email.' % best
-    msg = MIMEText('Goood stuff!')
+    msg = MIMEText('computer name: %s\nrun_id: %d' % (host_name, run_id))
 
 # me == the sender's email address
 # you == the recipient's email address
@@ -43,9 +46,10 @@ while True:
     for quality in qualities:
         q.append(float(quality.split(' ')[-1].replace(',', '')))
 
-    candidate = min(q)
-    if candidate < best:
-        best = candidate
-        send_email(best)
+    if q:
+        candidate = min(q)
+        if candidate < best:
+            best = candidate
+            send_email(best)
 
-    time.sleep(180)
+    time.sleep(240)
