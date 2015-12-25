@@ -5,12 +5,12 @@ import os
 import glob
 
 # config
-train_path = '/data/senseval2/eng-lex-sample.training.xml'
-test_path = '/data/senseval2/eng-lex-samp.evaluation.xml'
+train_path = '/data/senseval3/eng-lex/EnglishLS.train.mod'
+test_path = '/data/senseval3/eng-lex/EnglishLS.test.mod'
 
 # load data
-train_data = load_senteval2_data(train_path, is_training=True)
-test_data = load_senteval2_data(test_path, is_training=False)
+train_data = load_senteval3_data(train_path, is_training=True)
+test_data = load_senteval3_data(test_path, is_training=False)
 print 'Dataset size (train/test): %d / %d' % (len(train_data), len(test_data))
 
 # build vocab utils
@@ -24,7 +24,7 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 
 lexelts = get_lexelts(train_path)
 target_word_to_lexelt = target_to_lexelt_map(target_word_to_id.keys(), lexelts)
-target_word_to_lexelt['colorless'] = target_word_to_lexelt['colourless']
+# target_word_to_lexelt['colorless'] = target_word_to_lexelt['colourless']
 
 target_id_to_word = {id: word for (word, id) in target_word_to_id.iteritems()}
 target_id_to_sense_id_to_sense = [{sense_id: sense for (sense, sense_id) in sense_to_id.iteritems()} for (target_id, sense_to_id) in enumerate(target_sense_to_id)]
@@ -50,7 +50,7 @@ with tf.Session() as session:
         model = Model(False, conf, n_senses_from_target_id, word_to_id, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-105')
+    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-80')
 
 
     class Answer:
@@ -81,4 +81,5 @@ with tf.Session() as session:
     path = '/home/salomons/tmp/result'
     with open(path, 'w') as file:
         for a in result:
-            file.write('%s %s %s\n' % (a.target_word, a.instance_id, a.predicted_sense))
+            first = a.lexelt
+            file.write('%s %s %s\n' % (first, a.instance_id, a.predicted_sense))

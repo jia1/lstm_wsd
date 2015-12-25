@@ -55,7 +55,7 @@ conf = {
     'train_embeddings': True
 }
 
-train_data, val_data = train_test_split(train_ndata, test_size=0.2)
+train_data, val_data = train_test_split(train_ndata, test_size=0.0)
 
 init_emb = fill_with_gloves(word_to_id, 100)
 
@@ -75,7 +75,7 @@ for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
     summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
-    run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
+    # run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
