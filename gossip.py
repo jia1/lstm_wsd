@@ -21,7 +21,7 @@ best = 1000.0
 
 def send_email(best):
     print 'New best found: %f. Sending email.' % best
-    msg = MIMEText('computer name: %s\nrun_id: %d' % (host_name, run_id))
+    msg = MIMEText('computer name: %s\nrun_id: %s' % (host_name, run_id))
 
 # me == the sender's email address
 # you == the recipient's email address
