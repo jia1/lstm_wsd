@@ -1,4 +1,5 @@
 import lxml.etree as et
+import math
 import numpy as np
 import collections
 import re
@@ -127,7 +128,7 @@ def get_lexelts(se_2_or_3):
 
 
 def target_to_lexelt_map(target_words, lexelts):
-    assert len(target_words) == len(lexelts)
+    # assert len(target_words) == len(lexelts)
 
     res = {}
     for lexelt in lexelts:
@@ -285,8 +286,11 @@ class Instance:
     pass
 
 
-def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b):
-    n_batches = len(data) // batch_size
+def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch=False):
+    data_len = len(data)
+    n_batches_float = data_len / float(batch_size)
+    n_batches = int(math.ceil(n_batches_float)) if pad_last_batch else int(n_batches_float)
+
     random.shuffle(data)
 
     for i in range(n_batches):
@@ -299,18 +303,28 @@ def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b):
 
         # x forward backward
         for j in range(batch_size):
-            n_to_use_f = min(n_step_f, len(batch[j].xf))
-            n_to_use_b = min(n_step_b, len(batch[j].xb))
-            xfs[j, -n_to_use_f:] = batch[j].xf[-n_to_use_f:]
-            xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
-
-        # labels
-        target_ids = np.array([inst.target_id for inst in batch]).astype(np.int32)
-        sense_ids = np.array([inst.sense_id for inst in batch]).astype(np.int32)
-        # one_hot_labels = np.vstack([inst.one_hot_labels for inst in batch])
+            if i * batch_size + j < data_len:
+                n_to_use_f = min(n_step_f, len(batch[j].xf))
+                n_to_use_b = min(n_step_b, len(batch[j].xb))
+                xfs[j, -n_to_use_f:] = batch[j].xf[-n_to_use_f:]
+                xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
 
         # id
         instance_ids = [inst.id for inst in batch]
+
+        # labels
+        target_ids = [inst.target_id for inst in batch]
+        sense_ids = [inst.sense_id for inst in batch]
+
+        if len(target_ids) < batch_size:    # padding
+            n_pad = batch_size - len(target_ids)
+            target_ids += [0] * n_pad
+            sense_ids += [0] * n_pad
+            instance_ids += [''] * n_pad
+
+        target_ids = np.array(target_ids).astype(np.int32)
+        sense_ids = np.array(sense_ids).astype(np.int32)
+        # one_hot_labels = np.vstack([inst.one_hot_labels for inst in batch])
 
         yield (xfs, xbs, target_ids, sense_ids, instance_ids)
 

@@ -16,16 +16,16 @@ run_id = sys.argv[1]
 
 path = '/home/salomons/project/wsd/smac-output/scenario/live-rundata-' + str(run_id) + '.json'
 
-best = 1000.0
+bests = [1000.0]
 
 
-def send_email(best):
-    print 'New best found: %f. Sending email.' % best
-    msg = MIMEText('computer name: %s\nrun_id: %s' % (host_name, run_id))
+def send_email(bests):
+    print 'New best found: %f. Sending email.' % bests[-1]
+    msg = MIMEText('computer name: %s\nrun_id: %s\nhistory: %s' % (host_name, run_id, str(bests)))
 
 # me == the sender's email address
 # you == the recipient's email address
-    msg['Subject'] = 'New best: %f' % best
+    msg['Subject'] = 'New best: %f' % bests[-1]
     msg['From'] = from_ = 'salomons@net.chalmers.se'
     msg['To'] = to_ = 'hans.salomonsson@outlook.com'
 
@@ -48,8 +48,8 @@ while True:
 
     if q:
         candidate = min(q)
-        if candidate < best:
-            best = candidate
-            send_email(best)
+        if candidate < bests[-1]:
+            bests.append(candidate)
+            send_email(bests)
 
     time.sleep(240)
