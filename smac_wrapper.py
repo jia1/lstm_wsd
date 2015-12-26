@@ -11,6 +11,8 @@ cutoff = int(float(sys.argv[3]) + 1)
 runlength = int(sys.argv[4])
 seed = int(sys.argv[5])
 
+seed = seed if seed != -1 else 1234
+
 # Read in parameter setting and build a dictionary mapping param_name to param_value.
 params = sys.argv[6:]
 configMap = dict((name, value) for name, value in zip(params[::2], params[1::2]))

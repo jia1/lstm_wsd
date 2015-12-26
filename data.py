@@ -10,6 +10,12 @@ from itertools import groupby
 import random
 
 
+train_path2 = '/data/senseval2/eng-lex-sample.training.xml'
+test_path2 = '/data/senseval2/eng-lex-samp.evaluation.xml'
+train_path3 = '/data/senseval3/eng-lex/EnglishLS.train.mod'
+test_path3 = '/data/senseval3/eng-lex/EnglishLS.test.mod'
+
+
 replace_target = re.compile("""<head.*?>.*</head>""")
 replace_newline = re.compile("""\n""")
 replace_dot = re.compile("\.")
@@ -41,6 +47,24 @@ def one_hot_encode(length, target):
     y = np.zeros(length, dtype=np.float32)
     y[target] = 1.
     return y
+
+
+def load_train_data(se_2_or_3):
+    if se_2_or_3 == 2:
+        return load_senteval2_data(train_path2, True)
+    elif se_2_or_3 == 3:
+        return load_senteval3_data(train_path3, True)
+    else:
+        raise ValueError('2 or 3. Provided: %d' % se_2_or_3)
+
+
+def load_test_data(se_2_or_3):
+    if se_2_or_3 == 2:
+        return load_senteval2_data(test_path2, False)
+    elif se_2_or_3 == 3:
+        return load_senteval3_data(test_path3, False)
+    else:
+        raise ValueError('2 or 3. Provided: %d' % se_2_or_3)
 
 
 def load_senteval3_data(path, is_training):
@@ -83,8 +107,9 @@ def load_senteval2_data(path, is_training, dtd_validation=True):
     return data
 
 
-def get_lexelts(path):
+def get_lexelts(se_2_or_3):
     items = []
+    path = train_path2 if se_2_or_3 == 2 else train_path3
     parser = et.XMLParser(dtd_validation=True)
     doc = et.parse(path, parser)
     instances = doc.findall('.//lexelt')

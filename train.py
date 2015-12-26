@@ -12,12 +12,11 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-train_path = '/data/senseval3/eng-lex/EnglishLS.train.mod'
-test_path = '/data/senseval3/eng-lex/EnglishLS.test.mod'
+se_2_or_3 = 3
 
 # load data
-train_data = load_senteval3_data(train_path, is_training=True)
-test_data = load_senteval3_data(test_path, is_training=False)
+train_data = load_train_data(se_2_or_3)
+test_data = load_test_data(se_2_or_3)
 print 'Dataset size (train/test): %d / %d' % (len(train_data), len(test_data))
 
 # build vocab utils

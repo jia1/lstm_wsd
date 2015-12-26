@@ -3,14 +3,17 @@ import tensorflow as tf
 from model import *
 import os
 import glob
+import sys
 
 # config
-train_path = '/data/senseval3/eng-lex/EnglishLS.train.mod'
-test_path = '/data/senseval3/eng-lex/EnglishLS.test.mod'
+if len(sys.argv) < 2:
+    sys.exit('usage: program se_2_or_3')
+
+se_2_or_3 = int(sys.argv[1])
 
 # load data
-train_data = load_senteval3_data(train_path, is_training=True)
-test_data = load_senteval3_data(test_path, is_training=False)
+train_data = load_train_data(se_2_or_3)
+test_data = load_test_data(se_2_or_3)
 print 'Dataset size (train/test): %d / %d' % (len(train_data), len(test_data))
 
 # build vocab utils
@@ -22,7 +25,7 @@ print 'Vocabulary size: %d' % len(word_to_id)
 train_ndata = convert_to_numeric(train_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 
-lexelts = get_lexelts(train_path)
+lexelts = get_lexelts(se_2_or_3)
 target_word_to_lexelt = target_to_lexelt_map(target_word_to_id.keys(), lexelts)
 # target_word_to_lexelt['colorless'] = target_word_to_lexelt['colourless']
 
@@ -50,7 +53,7 @@ with tf.Session() as session:
         model = Model(False, conf, n_senses_from_target_id, word_to_id, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-80')
+    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-170')
 
 
     class Answer:

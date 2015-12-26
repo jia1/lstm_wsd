@@ -1,7 +1,7 @@
 pcs-file = params.pcs
 use-instances = false
 runObj = QUALITY
-cutoffTime = 18000
+cutoffTime = 3600 
 wallclock-limit = 172800
-deterministic = 0
+deterministic = 1
 algo = ./smac_wrapper.py
