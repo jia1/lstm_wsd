@@ -1,7 +1,6 @@
 from data import *
 from glove import *
 import tensorflow as tf
-import tensorflow.models.rnn.rnn_cell as rnn_cell
 from sklearn.cross_validation import train_test_split
 import os
 import glob
@@ -51,7 +50,8 @@ conf = {
     'input_keep_prob': .594688,
     'keep_prob': 0.193,
     'embedding_size': 100,
-    'train_embeddings': True
+    'train_embeddings': True,
+    'forget_bias': 0.0
 }
 
 train_data, val_data = train_test_split(train_ndata, test_size=0.0)

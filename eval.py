@@ -42,7 +42,8 @@ conf = {
     'input_keep_prob': .594688,
     'keep_prob': 0.193,
     'embedding_size': 100,
-    'train_embeddings': True
+    'train_embeddings': True,
+    'forget_bias': 0
 }
 
 with tf.Session() as session:

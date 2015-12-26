@@ -14,6 +14,7 @@ class Model:
         n_units = conf['n_lstm_units']
         state_size = n_units
         n_layers = conf['n_layers']
+        forget_bias = conf['forget_bias']
 
         emb_base_std = conf['emb_base_std']
         input_keep_prob = conf['input_keep_prob']
@@ -74,7 +75,7 @@ class Model:
 
         with tf.variable_scope("forward"):
             f_lstm = rnn_cell.BasicLSTMCell(n_units,
-                                            forget_bias=0.)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
+                                            forget_bias=forget_bias)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
             f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
@@ -92,7 +93,7 @@ class Model:
 
         with tf.variable_scope("backward"):
             b_lstm = rnn_cell.BasicLSTMCell(n_units,
-                                            forget_bias=0.)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
+                                            forget_bias=forget_bias)  # LSTMCell(n_units, embedding_size, use_peepholes=True, initializer=tf.random_uniform_initializer(-.1, .1))
             if is_training:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
             b_lstm = rnn_cell.MultiRNNCell([b_lstm] * n_layers)

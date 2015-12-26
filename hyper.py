@@ -30,6 +30,7 @@ parser.add_argument('--n_lstm_units')
 parser.add_argument('--n_step_f')
 parser.add_argument('--n_step_b')
 parser.add_argument('--train_embeddings')
+parser.add_argument('--forget_bias')
 
 args = parser.parse_args()
 
@@ -43,7 +44,8 @@ conf = {
     'input_keep_prob': float(args.input_keep_prob),
     'keep_prob': float(args.keep_prob),
     'embedding_size': int(args.embedding_size),
-    'train_embeddings': bool(args.train_embeddings)
+    'train_embeddings': bool(args.train_embeddings),
+    'forget_bias': float(args.forget_bias)
 }
 
 start_time = time.time()

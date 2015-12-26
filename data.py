@@ -1,5 +1,4 @@
 import lxml.etree as et
-import tensorflow as tf
 import numpy as np
 import collections
 import re
@@ -14,7 +13,6 @@ train_path2 = '/data/senseval2/eng-lex-sample.training.xml'
 test_path2 = '/data/senseval2/eng-lex-samp.evaluation.xml'
 train_path3 = '/data/senseval3/eng-lex/EnglishLS.train.mod'
 test_path3 = '/data/senseval3/eng-lex/EnglishLS.test.mod'
-
 
 replace_target = re.compile("""<head.*?>.*</head>""")
 replace_newline = re.compile("""\n""")
