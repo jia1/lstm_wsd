@@ -11,7 +11,8 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-se_2_or_3 = 3
+se_2_or_3 = 23
+validate = True
 
 # load data
 train_data = load_train_data(se_2_or_3)
@@ -54,7 +55,8 @@ conf = {
     'forget_bias': 0.0
 }
 
-train_data, val_data = train_test_split(train_ndata, test_size=0.0)
+test_size = 0.2 if validate else 0.0
+train_data, val_data = train_test_split(train_ndata, test_size=test_size)
 
 init_emb = fill_with_gloves(word_to_id, 100)
 
@@ -74,7 +76,8 @@ for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
     summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
-    # run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
+    if validate:
+        run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)

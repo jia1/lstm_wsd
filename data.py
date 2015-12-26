@@ -52,6 +52,10 @@ def load_train_data(se_2_or_3):
         return load_senteval2_data(train_path2, True)
     elif se_2_or_3 == 3:
         return load_senteval3_data(train_path3, True)
+    elif se_2_or_3 == 23:
+        two = load_senteval2_data(train_path2, True)
+        three = load_senteval3_data(train_path3, True)
+        return two + three
     else:
         raise ValueError('2 or 3. Provided: %d' % se_2_or_3)
 
@@ -61,6 +65,10 @@ def load_test_data(se_2_or_3):
         return load_senteval2_data(test_path2, False)
     elif se_2_or_3 == 3:
         return load_senteval3_data(test_path3, False)
+    elif se_2_or_3 == 23:
+        two = load_senteval2_data(test_path2, False)
+        three = load_senteval3_data(test_path3, False)
+        return two + three
     else:
         raise ValueError('2 or 3. Provided: %d' % se_2_or_3)
 
