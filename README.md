@@ -1,6 +1,6 @@
 # README #
 
-This is a work in progress state-of-the-art WSD tool. However not working as it should...
+This is a work in progress state-of-the-art WSD tool.
 
 ### What is this repository for? ###
 
