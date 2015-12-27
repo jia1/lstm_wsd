@@ -7,6 +7,20 @@ from model import *
 se_2_or_3 = 23
 se_to_eval = 2
 model_global_step = 80
+conf = {
+    'batch_size': 100,
+    'n_step_f': 147,
+    'n_step_b': 42,
+    'n_lstm_units': 74,
+    'n_layers': 1,
+    'emb_base_std': 0.10988,
+    'input_keep_prob': .594688,
+    'keep_prob': 0.193,
+    'embedding_size': 100,
+    'train_embeddings': True,
+    'forget_bias': 0,
+    'state_size': 200
+}
 
 # load data
 train_data = load_train_data(se_2_or_3)
@@ -30,19 +44,6 @@ if 'colourless' in target_word_to_lexelt:
 target_id_to_word = {id: word for (word, id) in target_word_to_id.iteritems()}
 target_id_to_sense_id_to_sense = [{sense_id: sense for (sense, sense_id) in sense_to_id.iteritems()} for (target_id, sense_to_id) in enumerate(target_sense_to_id)]
 
-conf = {
-    'batch_size': 100,
-    'n_step_f': 147,
-    'n_step_b': 42,
-    'n_lstm_units': 74,
-    'n_layers': 1,
-    'emb_base_std': 0.10988,
-    'input_keep_prob': .594688,
-    'keep_prob': 0.193,
-    'embedding_size': 100,
-    'train_embeddings': True,
-    'forget_bias': 0
-}
 
 with tf.Session() as session:
     print 'Restoring model'

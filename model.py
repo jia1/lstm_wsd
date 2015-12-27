@@ -12,7 +12,6 @@ class Model:
         n_step_b = conf['n_step_b']
 
         n_units = conf['n_lstm_units']
-        state_size = n_units
         n_layers = conf['n_layers']
         forget_bias = conf['forget_bias']
 
@@ -20,6 +19,8 @@ class Model:
         input_keep_prob = conf['input_keep_prob']
         keep_prob = conf['keep_prob']
         embedding_size = conf['embedding_size']
+
+        state_size = conf['state_size']
 
         lr_start = 2.0
         lr_decay_factor = 0.96
@@ -58,8 +59,8 @@ class Model:
         n_senses_sorted_by_target_id = [n_senses_from_target_id[target_id] for target_id
                                         in range(len(n_senses_from_target_id))]
         n_senses_sorted_by_target_id_tf = tf.constant(n_senses_sorted_by_target_id, tf.int32)
-        _W_starts = (np.cumsum(np.append([0], n_senses_sorted_by_target_id)) * 2 * state_size)[:-1]
-        _W_lenghts = np.array(n_senses_sorted_by_target_id) * 2 * state_size
+        _W_starts = (np.cumsum(np.append([0], n_senses_sorted_by_target_id)) * state_size)[:-1]
+        _W_lenghts = np.array(n_senses_sorted_by_target_id) * state_size
         W_starts = tf.constant(_W_starts, tf.int32)
         W_lengths = tf.constant(_W_lenghts, tf.int32)
 
@@ -69,7 +70,7 @@ class Model:
         b_lengths = tf.constant(_b_lengths, tf.int32)
 
         with tf.variable_scope('target_params', initializer=tf.random_uniform_initializer(-.1, .1)):
-            W_target = tf.get_variable('W_target', [tot_n_senses * 2 * state_size], dtype=tf.float32)
+            W_target = tf.get_variable('W_target', [tot_n_senses * state_size], dtype=tf.float32)
             b_target = tf.get_variable('b_target', [tot_n_senses], dtype=tf.float32,
                                        initializer=tf.constant_initializer(0.0))
 
@@ -117,10 +118,16 @@ class Model:
         if is_training:
             state = tf.nn.dropout(state, keep_prob)
 
+        # hidden layer
+        with tf.variable_scope('hidden'):
+            hidden = rnn_cell.linear(state, state_size, True)
+            if is_training:
+                hidden = tf.nn.dropout(hidden, keep_prob)
+
         loss = tf.Variable(0., trainable=False)
         n_correct = tf.Variable(0, trainable=False)
 
-        unbatched_states = tf.split(0, batch_size, state)
+        unbatched_states = tf.split(0, batch_size, hidden)
         unbatched_target_ids = tf.split(0, batch_size, train_target_ids)
         unbatched_sense_ids = tf.split(0, batch_size, train_sense_ids)
         one = tf.constant(1, tf.int32, [1])
@@ -134,7 +141,7 @@ class Model:
 
             self.dbg['W'] = W = tf.reshape(
                 tf.slice(W_target, tf.slice(W_starts, target_id, one), tf.slice(W_lengths, target_id, one)),
-                [-1, 2 * state_size])
+                [-1, state_size])
             self.dbg['b'] = b = tf.slice(b_target, tf.slice(b_starts, target_id, one),
                                          tf.slice(b_lengths, target_id, one))
 
@@ -192,13 +199,31 @@ class Model:
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
         lr = tf.train.exponential_decay(lr_start, global_step, batch_size, lr_decay_factor)
         optimizer = tf.train.MomentumOptimizer(lr, 0.1)
-        w_embedding = tf.select(tf.less(global_step, skip_train_emb), tf.zeros([vocab_size, embedding_size]), tf.ones([vocab_size, embedding_size]))
-        for i, tvar in enumerate(tvars):
-            ...
+
+        # scaling down the learning for the embedings in the beginning
+        # w = tf.constant(should_update, shape=[vocab_size, embedding_size])
+        # w_embedding = tf.select(w, tf.zeros([vocab_size, embedding_size]), tf.ones([vocab_size, embedding_size]))
+        # if conf['train_embeddings']:
+        #     self.dbg['should_update'] = should_update = tf.to_float(tf.less(tf.to_int32(global_step), skip_train_emb))
+        #     for i, tvar in enumerate(tvars):
+        #         if tvar.name == 'model/emb/embeddings:0':
+        #             grads[i] = tf.mul(grads[i], should_update)
+                    # self.dbg['grad_embeddings'] = tf.convert_to_tensor(grads[i])
 
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
 
         self.summary_op = tf.merge_all_summaries()
+
+
+def debug(model, session, feed_dict):
+    for name, op in model.dbg.iteritems():
+        value = session.run(op, feed_dict)
+        print '::: %s :::: \n%s' % (name, np.array_str(value))
+
+
+def debug_op(op, session, feed_dict):
+    value = session.run(op, feed_dict)
+    print value
 
 
 def run_epoch(session, model, conf, data_, mode, word_to_id):
@@ -224,7 +249,7 @@ def run_epoch(session, model, conf, data_, mode, word_to_id):
         }
 
         # debug(model, session, feeds)
-        # debug_op(model.predictions, session, feeds)
+        # debug_op(model.dbg['grad_embeddings'], session, feeds)
 
         fetches = session.run(ops, feeds)
 

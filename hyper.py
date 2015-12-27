@@ -9,7 +9,7 @@ from model import *
 import argparse
 
 
-se_2_or_3 = 3
+se_2_or_3 = 2
 
 
 # /home/salomons/project/wsd/hyper.py --seed 7768176 --model-stdout --dimacs no_instance --tmout 1801 --n_layers 1 --n_lstm_units 20 --n_step_b 40 --n_step_f 40 --input_keep_prob 0.9 --emb_base_std 0.5 --batch_size 20 --embedding_size 100 --keep_prob 0.5
@@ -31,6 +31,7 @@ parser.add_argument('--n_step_f')
 parser.add_argument('--n_step_b')
 parser.add_argument('--train_embeddings')
 parser.add_argument('--forget_bias')
+parser.add_argument('--state_size')
 
 args = parser.parse_args()
 
@@ -45,7 +46,8 @@ conf = {
     'keep_prob': float(args.keep_prob),
     'embedding_size': int(args.embedding_size),
     'train_embeddings': bool(args.train_embeddings),
-    'forget_bias': float(args.forget_bias)
+    'forget_bias': float(args.forget_bias),
+    'state_size': int(args.state_size)
 }
 
 start_time = time.time()
