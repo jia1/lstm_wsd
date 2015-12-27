@@ -6,7 +6,7 @@ from sklearn.cross_validation import train_test_split
 
 
 class Model:
-    def __init__(self, is_training, conf, n_senses_from_target_id, word_to_id, init_word_vecs=None):
+    def __init__(self, is_training, conf, n_senses_from_target_id, word_to_id, init_word_vecs=None, skip_train_emb=0):
         batch_size = conf['batch_size']
         n_step_f = conf['n_step_f']
         n_step_b = conf['n_step_b']
@@ -192,6 +192,10 @@ class Model:
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
         lr = tf.train.exponential_decay(lr_start, global_step, batch_size, lr_decay_factor)
         optimizer = tf.train.MomentumOptimizer(lr, 0.1)
+        w_embedding = tf.select(tf.less(global_step, skip_train_emb), tf.zeros([vocab_size, embedding_size]), tf.ones([vocab_size, embedding_size]))
+        for i, tvar in enumerate(tvars):
+            ...
+
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
 
         self.summary_op = tf.merge_all_summaries()
