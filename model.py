@@ -197,8 +197,8 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        lr = tf.maximum(0.01, tf.train.exponential_decay(lr_start, global_step, 30, lr_decay_factor))
-        optimizer = tf.train.MomentumOptimizer(lr, 0.1)
+        self.lr = tf.maximum(0.01, tf.train.exponential_decay(lr_start, global_step, 30, lr_decay_factor))
+        optimizer = tf.train.MomentumOptimizer(self.lr, 0.1)
 
         # scaling down the learning for the embedings in the beginning
         # w = tf.constant(should_update, shape=[vocab_size, embedding_size])
@@ -228,7 +228,7 @@ def debug_op(op, session, feed_dict):
 
 def run_epoch(session, model, conf, data_, mode, word_to_id):
     if mode == 'train':
-        ops = [model.cost_op, model.accuracy_op, model.train_op]
+        ops = [model.cost_op, model.accuracy_op, model.lr, model.train_op]
     elif mode == 'val':
         ops = [model.cost_op, model.accuracy_op]
     else:
@@ -236,6 +236,7 @@ def run_epoch(session, model, conf, data_, mode, word_to_id):
 
     cost = 0.
     accuracy = 0.
+    lr = 0.0
     summaries = []
 
     n_batches = 0
@@ -255,13 +256,15 @@ def run_epoch(session, model, conf, data_, mode, word_to_id):
 
         cost += fetches[0]
         accuracy += fetches[1]
-        # if mode == 'train':
-        #     summaries.append(fetches[2])
+        if mode == 'train':
+            lr += fetches[2]
+
         n_batches += 1
 
     cost_epoch = cost / n_batches
     accuracy_epoch = accuracy / n_batches
-    print '%s --> \tcost: \t%f, \taccuracy: \t%f' % (mode.upper(), cost_epoch, accuracy_epoch)
+    lr /= n_batches
+    print '%s --> \tcost: %f, \taccuracy: %f, \tlr: %f' % (mode.upper(), cost_epoch, accuracy_epoch, lr)
 
     # if mode == 'train':
     #     return summaries
