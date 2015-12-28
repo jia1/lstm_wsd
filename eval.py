@@ -5,27 +5,28 @@ from model import *
 
 
 # config
-se_2_or_3 = 2
-se_to_eval = 2
-model_global_step = 90
+se_2_or_3 = 3
+se_to_eval = 3
+model_global_step = 75
 
 conf = pickle.load(open('/home/salomons/tmp/model/conf.pkl'))
 if not conf:
     print '\nWARNING: no conf.pkl file found!\n'
-    conf = {
-        'batch_size': 100,
-        'n_step_f': 147,
-        'n_step_b': 42,
-        'n_lstm_units': 74,
-        'n_layers': 1,
-        'emb_base_std': 0.10988,
-        'input_keep_prob': .594688,
-        'keep_prob': 0.193,
-        'embedding_size': 100,
-        'train_embeddings': True,
-        'forget_bias': 0,
-        'state_size': 200
-    }
+    conf = None
+    # {
+    #     'batch_size': 100,
+    #     'n_step_f': 147,
+    #     'n_step_b': 42,
+    #     'n_lstm_units': 74,
+    #     'n_layers': 1,
+    #     'emb_base_std': 0.10988,
+    #     'input_keep_prob': .594688,
+    #     'keep_prob': 0.193,
+    #     'embedding_size': 100,
+    #     'train_embeddings': True,
+    #     'forget_bias': 0,
+    #     'state_size': 200
+    # }
 
 # load data
 train_data = load_train_data(se_2_or_3)

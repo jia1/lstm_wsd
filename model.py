@@ -197,7 +197,7 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        lr = tf.train.exponential_decay(lr_start, global_step, batch_size, lr_decay_factor)
+        lr = tf.maximum(0.01, tf.train.exponential_decay(lr_start, global_step, 30, lr_decay_factor))
         optimizer = tf.train.MomentumOptimizer(lr, 0.1)
 
         # scaling down the learning for the embedings in the beginning
