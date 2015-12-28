@@ -1,4 +1,5 @@
 from data import *
+import pickle
 from glove import *
 import tensorflow as tf
 from sklearn.cross_validation import train_test_split
@@ -12,8 +13,8 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
 
 # config
 se_2_or_3 = 2
-validate = True
-n_epochs = 100
+validate = False
+n_epochs = 200
 conf = {
     'batch_size': 100,
     'n_step_f': 100,
@@ -28,6 +29,7 @@ conf = {
     'forget_bias': 0.0,
     'state_size': 200
 }
+pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
 # load data
 train_data = load_train_data(se_2_or_3)
@@ -43,9 +45,7 @@ print 'Vocabulary size: %d' % len(word_to_id)
 train_ndata = convert_to_numeric(train_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target_sense_to_id, n_senses_from_target_id)
 
-
-
-
+# validate
 test_size = 0.2 if validate else 0.0
 train_data, val_data = train_test_split(train_ndata, test_size=test_size)
 
