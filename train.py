@@ -13,16 +13,16 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
 
 # config
 se_2_or_3 = 3
-validate = False
+validate = True
 n_epochs = 200
 conf = {
     'batch_size': 100,
     'n_step_f': 100,
-    'n_step_b': 42,
-    'n_lstm_units': 100,
+    'n_step_b': 40,
+    'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.20988,
-    'input_keep_prob': 0.5,
+    'emb_base_std': 0.10988,
+    'input_keep_prob': 0.35,
     'keep_prob': 0.5,
     'embedding_size': 100,
     'train_embeddings': True,
@@ -62,11 +62,16 @@ session = tf.Session()
 session.run(tf.initialize_all_variables())
 
 # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
+# if warm_start:
+#     print 'Warm starting with model path: %s' % warm_start
+#     with tf.variable_scope('model'):
+#         saver.restore(session, warm_start)
 
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
-    summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
+    freeze_emb = i < 10
+    summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id, freeze_emb)
     if validate:
         run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 

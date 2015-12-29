@@ -24,6 +24,7 @@ class Model:
 
         lr_start = 2.0
         lr_decay_factor = 0.96
+        lr_min = 0.05
 
         print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
@@ -197,7 +198,7 @@ class Model:
 
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        self.lr = tf.maximum(0.01, tf.train.exponential_decay(lr_start, global_step, 30, lr_decay_factor))
+        self.lr = tf.maximum(lr_min, tf.train.exponential_decay(lr_start, global_step, 60, lr_decay_factor))
         optimizer = tf.train.MomentumOptimizer(self.lr, 0.1)
 
         # scaling down the learning for the embedings in the beginning
@@ -211,6 +212,7 @@ class Model:
                     # self.dbg['grad_embeddings'] = tf.convert_to_tensor(grads[i])
 
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
+        self.train_op_no_emb = optimizer.apply_gradients(zip(grads[1:], tvars[1:]), global_step=global_step)
 
         self.summary_op = tf.merge_all_summaries()
 
@@ -226,9 +228,14 @@ def debug_op(op, session, feed_dict):
     print value
 
 
-def run_epoch(session, model, conf, data_, mode, word_to_id):
+def run_epoch(session, model, conf, data_, mode, word_to_id, freeze_emb=False):
     if mode == 'train':
-        ops = [model.cost_op, model.accuracy_op, model.lr, model.train_op]
+        ops = [model.cost_op, model.accuracy_op, model.lr]
+        if freeze_emb:
+            print 'Embeddings frozen'
+            ops += [model.train_op_no_emb]
+        else:
+            ops += [model.train_op]
     elif mode == 'val':
         ops = [model.cost_op, model.accuracy_op]
     else:
