@@ -31,6 +31,11 @@ conf = {
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
+# random conf
+seed = 1234
+tf.set_random_seed(seed)
+np.random.seed(seed)
+
 # load data
 train_data = load_train_data(se_2_or_3)
 test_data = load_test_data(se_2_or_3)
