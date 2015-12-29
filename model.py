@@ -14,7 +14,7 @@ class Model:
         n_units = conf['n_lstm_units']
         n_layers = conf['n_layers']
         forget_bias = conf['forget_bias']
-        learn_init_state = conf['learn_init_state']
+        train_init_state = conf['train_init_state']
 
         emb_base_std = conf['emb_base_std']
         input_keep_prob = conf['input_keep_prob']
@@ -22,7 +22,6 @@ class Model:
         embedding_size = conf['embedding_size']
 
         state_size = conf['state_size']
-
 
         lr_start = 2.0
         lr_decay_factor = 0.96
@@ -52,7 +51,8 @@ class Model:
 
         with tf.variable_scope('emb'):
             self.dbg['embeddings'] = embeddings = tf.get_variable('embeddings', [vocab_size, embedding_size],
-                                                                  initializer=embedding_initializer, trainable=conf['train_embeddings'])
+                                                                  initializer=embedding_initializer,
+                                                                  trainable=conf['train_embeddings'])
 
         mean_embeddings = tf.reduce_mean(embeddings, 0, keep_dims=True)
         self.dbg['std_emb'] = std_embeddings = tf.sqrt(tf.reduce_mean(tf.square(embeddings - mean_embeddings), 0))
@@ -84,8 +84,8 @@ class Model:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
             f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
 
-            f_state = tf.get_variable('f_init_state', [batch_size, 2*n_units])\
-                if learn_init_state else f_lstm.zero_state(batch_size, tf.float32)
+            f_state = tf.get_variable('f_init_state', [batch_size, 2 * n_units * n_layers]) \
+                if train_init_state else f_lstm.zero_state(batch_size, tf.float32)
 
             inputs_f = tf.split(1, n_step_f, self.inputs_f)
             for time_step, inputs_ in enumerate(inputs_f):
@@ -103,8 +103,8 @@ class Model:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
             b_lstm = rnn_cell.MultiRNNCell([b_lstm] * n_layers)
 
-            b_state = tf.get_variable('b_init_state', [batch_size, 2*n_units]) \
-                if learn_init_state else  b_lstm.zero_state(batch_size, tf.float32)
+            b_state = tf.get_variable('b_init_state', [batch_size, 2 * n_units * n_layers]) \
+                if train_init_state else  b_lstm.zero_state(batch_size, tf.float32)
 
             inputs_b = tf.split(1, n_step_b, self.inputs_b)
             for time_step, inputs_ in enumerate(inputs_b):
@@ -214,7 +214,7 @@ class Model:
         #     for i, tvar in enumerate(tvars):
         #         if tvar.name == 'model/emb/embeddings:0':
         #             grads[i] = tf.mul(grads[i], should_update)
-                    # self.dbg['grad_embeddings'] = tf.convert_to_tensor(grads[i])
+        # self.dbg['grad_embeddings'] = tf.convert_to_tensor(grads[i])
 
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
         self.train_op_no_emb = optimizer.apply_gradients(zip(grads[1:], tvars[1:]), global_step=global_step)
@@ -252,7 +252,8 @@ def run_epoch(session, model, conf, data_, mode, word_to_id, freeze_emb=False):
     summaries = []
 
     n_batches = 0
-    for batch in batch_generator(conf['batch_size'], data_, word_to_id['<pad>'], conf['n_step_f'], conf['n_step_b']):
+    for batch in batch_generator(conf['batch_size'], data_, word_to_id['<pad>'], conf['n_step_f'],
+                                 conf['n_step_b'], permute_order=conf.get('permute_input_order'), word_drop_rate=conf.get('word_drop_rate')):
         xf, xb, target_ids, sense_ids, instance_ids = batch
         feeds = {
             model.inputs_f: xf,
@@ -283,59 +284,3 @@ def run_epoch(session, model, conf, data_, mode, word_to_id, freeze_emb=False):
 
     return cost_epoch, accuracy_epoch
 
-
-# def debug(model, session, feed_dict):
-#     for name, op in model.dbg.iteritems():
-#         value = session.run(op, feed_dict)
-#         print '::: %s :::: \n%s' % (name, np.array_str(value))
-#
-#
-# def debug_op(op, session, feed_dict):
-#     value = session.run(op, feed_dict)
-#     print value
-
-
-# if __name__ == '__main__':
-#     n_epochs = 300
-#     conf = {
-#         'batch_size': 100,
-#         'n_step_f': 80,
-#         'n_step_b': 80,
-#         'n_lstm_units': 20,
-#         'n_layers': 1,
-#         'emb_base_std': 0.5,
-#         'input_keep_prob': 1.0,
-#         'keep_prob': 0.5,
-#         'embedding_size': 100
-#     }
-#
-#     train_data, val_data = train_test_split(train_ndata, test_size=0.2)
-#
-#     init_emb = fill_with_gloves(word_to_id, 100)
-#
-#     with tf.variable_scope('model', reuse=None):
-#         model_train = Model(True, conf, init_emb)
-#     with tf.variable_scope('model', reuse=True):
-#         model_val = Model(False, conf, init_emb)
-#
-#     saver = tf.train.Saver(tf.all_variables(), max_to_keep=100)
-#
-#     tf_config = tf.ConfigProto(inter_op_parallelism_threads=4,
-#                                intra_op_parallelism_threads=4)
-#
-#     session = tf.Session(config=tf_config)
-#     session.run(tf.initialize_all_variables())
-#
-#     # writer = tf.train.SummaryWriter('/home/salomons/tmp/tf.log', session.graph_def, flush_secs=10)
-#
-#     for i in range(n_epochs):
-#         print '::: EPOCH: %d :::' % i
-#
-#         summaries = run_epoch(session, model_train, conf, train_data, 'train', i)
-#         run_epoch(session, model_val, conf, val_data, 'val', i)
-#
-#         # for batch_idx, summary in enumerate(summaries):
-#         #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
-#
-#         if i % 1 == 0:
-#             print saver.save(session, '/home/salomons/tmp/model/wsd.ckpt', global_step=i)

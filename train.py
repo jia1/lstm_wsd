@@ -21,14 +21,16 @@ conf = {
     'n_step_b': 40,
     'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.21,
-    'input_keep_prob': 0.5,
+    'emb_base_std': 0.0,
+    'input_keep_prob': 1.0,
     'keep_prob': 0.5,
     'embedding_size': 100,
     'train_embeddings': True,
-    'forget_bias': 1.0,
+    'forget_bias': 0.0,
     'state_size': 200,
-    'learn_init_state': True
+    'train_init_state': True,
+    'permute_input_order': False,
+    'word_drop_rate': 0.7
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 

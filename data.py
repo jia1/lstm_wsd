@@ -288,7 +288,7 @@ class Instance:
     pass
 
 
-def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch=False):
+def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch=False, word_drop_rate=None, permute_order=None):
     data_len = len(data)
     n_batches_float = data_len / float(batch_size)
     n_batches = int(math.ceil(n_batches_float)) if pad_last_batch else int(n_batches_float)
@@ -310,6 +310,16 @@ def batch_generator(batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch
                 n_to_use_b = min(n_step_b, len(batch[j].xb))
                 xfs[j, -n_to_use_f:] = batch[j].xf[-n_to_use_f:]
                 xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
+                if permute_order:
+                    xfs[j, -n_to_use_f:] = xfs[j, -n_to_use_f:][np.random.permutation(range(n_to_use_f))]
+                    xbs[j, -n_to_use_b:] = xbs[j, -n_to_use_b:][np.random.permutation(range(n_to_use_b))]
+                if word_drop_rate:
+                    n_rm_f = max(1, int(word_drop_rate * n_step_f))
+                    n_rm_b = max(1, int(word_drop_rate * n_step_b))
+                    rm_idx_f = np.random.random_integers(0, n_step_f-1, n_rm_f)
+                    rm_idx_b = np.random.random_integers(0, n_step_b-1, n_rm_b)
+                    xfs[j, rm_idx_f] = pad_id
+                    xbs[j, rm_idx_b] = pad_id
 
         # id
         instance_ids = [inst.id for inst in batch]
