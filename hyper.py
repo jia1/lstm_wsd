@@ -47,7 +47,8 @@ conf = {
     'embedding_size': int(args.embedding_size),
     'train_embeddings': bool(args.train_embeddings),
     'forget_bias': float(args.forget_bias),
-    'state_size': int(args.state_size)
+    'state_size': int(args.state_size),
+    'train_init_state': bool(args.train_init_state)
 }
 
 start_time = time.time()

@@ -14,6 +14,7 @@ class Model:
         n_units = conf['n_lstm_units']
         n_layers = conf['n_layers']
         forget_bias = conf['forget_bias']
+        learn_init_state = conf['learn_init_state']
 
         emb_base_std = conf['emb_base_std']
         input_keep_prob = conf['input_keep_prob']
@@ -21,6 +22,7 @@ class Model:
         embedding_size = conf['embedding_size']
 
         state_size = conf['state_size']
+
 
         lr_start = 2.0
         lr_decay_factor = 0.96
@@ -82,7 +84,8 @@ class Model:
                 f_lstm = rnn_cell.DropoutWrapper(f_lstm, input_keep_prob=input_keep_prob)
             f_lstm = rnn_cell.MultiRNNCell([f_lstm] * n_layers)
 
-            f_state = f_lstm.zero_state(batch_size, tf.float32)
+            f_state = tf.get_variable('f_init_state', [batch_size, 2*n_units])\
+                if learn_init_state else f_lstm.zero_state(batch_size, tf.float32)
 
             inputs_f = tf.split(1, n_step_f, self.inputs_f)
             for time_step, inputs_ in enumerate(inputs_f):
@@ -100,7 +103,8 @@ class Model:
                 b_lstm = rnn_cell.DropoutWrapper(b_lstm, input_keep_prob=input_keep_prob)
             b_lstm = rnn_cell.MultiRNNCell([b_lstm] * n_layers)
 
-            b_state = b_lstm.zero_state(batch_size, tf.float32)
+            b_state = tf.get_variable('b_init_state', [batch_size, 2*n_units]) \
+                if learn_init_state else  b_lstm.zero_state(batch_size, tf.float32)
 
             inputs_b = tf.split(1, n_step_b, self.inputs_b)
             for time_step, inputs_ in enumerate(inputs_b):
@@ -124,11 +128,12 @@ class Model:
             hidden = rnn_cell.linear(state, state_size, True)
             if is_training:
                 hidden = tf.nn.dropout(hidden, keep_prob)
+        y_hidden = tf.nn.tanh(hidden)
 
         loss = tf.Variable(0., trainable=False)
         n_correct = tf.Variable(0, trainable=False)
 
-        unbatched_states = tf.split(0, batch_size, hidden)
+        unbatched_states = tf.split(0, batch_size, y_hidden)
         unbatched_target_ids = tf.split(0, batch_size, train_target_ids)
         unbatched_sense_ids = tf.split(0, batch_size, train_sense_ids)
         one = tf.constant(1, tf.int32, [1])

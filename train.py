@@ -17,17 +17,18 @@ validate = True
 n_epochs = 200
 conf = {
     'batch_size': 100,
-    'n_step_f': 100,
+    'n_step_f': 70,
     'n_step_b': 40,
     'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.10988,
-    'input_keep_prob': 0.35,
+    'emb_base_std': 0.21,
+    'input_keep_prob': 0.5,
     'keep_prob': 0.5,
     'embedding_size': 100,
     'train_embeddings': True,
-    'forget_bias': 0.0,
-    'state_size': 300
+    'forget_bias': 1.0,
+    'state_size': 200,
+    'learn_init_state': True
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
