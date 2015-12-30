@@ -16,7 +16,7 @@ se_2_or_3 = 3
 validate = False
 n_epochs = 200
 conf = {
-    'batch_size': 100,
+    'batch_size': 200,
     'n_step_f': 70,
     'n_step_b': 40,
     'n_lstm_units': 74,
@@ -57,7 +57,7 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 test_size = 0.2 if validate else 0.0
 train_data, val_data = train_test_split(train_ndata, test_size=test_size)
 
-init_emb = fill_with_gloves(word_to_id, 100)
+init_emb = fill_with_gloves(word_to_id, conf['embedding_size'])
 
 with tf.variable_scope('model', reuse=None):
     model_train = Model(True, conf, n_senses_from_target_id, word_to_id, init_emb)

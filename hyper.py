@@ -32,6 +32,9 @@ parser.add_argument('--n_step_b')
 parser.add_argument('--train_embeddings')
 parser.add_argument('--forget_bias')
 parser.add_argument('--state_size')
+parser.add_argument('--train_init_state')
+parser.add_argument('--permute_input_order')
+parser.add_argument('--word_drop_rate')
 
 args = parser.parse_args()
 
@@ -48,7 +51,9 @@ conf = {
     'train_embeddings': bool(args.train_embeddings),
     'forget_bias': float(args.forget_bias),
     'state_size': int(args.state_size),
-    'train_init_state': bool(args.train_init_state)
+    'train_init_state': bool(args.train_init_state),
+    'permute_input_order': bool(args.permute_input_order),
+    'word_drop_rate': float(args.word_drop_rate)
 }
 
 start_time = time.time()
