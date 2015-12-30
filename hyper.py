@@ -9,11 +9,10 @@ from model import *
 import argparse
 
 
-se_2_or_3 = 2
+# conf
+se_2_or_3 = 3
 
-
-# /home/salomons/project/wsd/hyper.py --seed 7768176 --model-stdout --dimacs no_instance --tmout 1801 --n_layers 1 --n_lstm_units 20 --n_step_b 40 --n_step_f 40 --input_keep_prob 0.9 --emb_base_std 0.5 --batch_size 20 --embedding_size 100 --keep_prob 0.5
-
+# args
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed')
 parser.add_argument('--dimacs')

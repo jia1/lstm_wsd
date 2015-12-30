@@ -32,7 +32,7 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 lexelts = get_lexelts(se_to_eval)
 target_word_to_lexelt = target_to_lexelt_map(target_word_to_id.keys(), lexelts)
 if 'colourless' in target_word_to_lexelt:
-    ctarget_word_to_lexelt['colorless'] = target_word_to_lexelt['colourless']
+    target_word_to_lexelt['colorless'] = target_word_to_lexelt['colourless']
 
 target_id_to_word = {id: word for (word, id) in target_word_to_id.iteritems()}
 target_id_to_sense_id_to_sense = [{sense_id: sense for (sense, sense_id) in sense_to_id.iteritems()} for (target_id, sense_to_id) in enumerate(target_sense_to_id)]
