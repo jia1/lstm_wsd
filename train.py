@@ -13,7 +13,7 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
 
 # config
 se_2_or_3 = 3
-validate = True
+validate = False
 n_epochs = 200
 conf = {
     'batch_size': 100,
@@ -21,8 +21,8 @@ conf = {
     'n_step_b': 40,
     'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.0,
-    'input_keep_prob': 1.0,
+    'emb_base_std': 0.2,
+    'input_keep_prob': 0.5,
     'keep_prob': 0.5,
     'embedding_size': 100,
     'train_embeddings': True,
@@ -30,7 +30,7 @@ conf = {
     'state_size': 200,
     'train_init_state': True,
     'permute_input_order': False,
-    'word_drop_rate': 0.7
+    'word_drop_rate': 0.2
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 

@@ -7,7 +7,7 @@ from model import *
 # config
 se_2_or_3 = 3
 se_to_eval = 3
-model_global_step = 50
+model_global_step = 120
 
 conf = pickle.load(open('/home/salomons/tmp/model/conf.pkl'))
 if not conf:
@@ -54,7 +54,7 @@ with tf.Session() as session:
 
     print 'Evaluating'
     result = []
-    for batch_id, batch in enumerate(batch_generator(conf['batch_size'], test_ndata, word_to_id['<pad>'], conf['n_step_f'], conf['n_step_b'], pad_last_batch=True)):
+    for batch_id, batch in enumerate(batch_generator(False, conf['batch_size'], test_ndata, word_to_id['<pad>'], conf['n_step_f'], conf['n_step_b'], pad_last_batch=True)):
         xfs, xbs, target_ids, sense_ids, instance_ids = batch
         feed = {
             model.inputs_f: xfs,

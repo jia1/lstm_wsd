@@ -252,8 +252,9 @@ def run_epoch(session, model, conf, data_, mode, word_to_id, freeze_emb=False):
     summaries = []
 
     n_batches = 0
-    for batch in batch_generator(conf['batch_size'], data_, word_to_id['<pad>'], conf['n_step_f'],
-                                 conf['n_step_b'], permute_order=conf.get('permute_input_order'), word_drop_rate=conf.get('word_drop_rate')):
+    for batch in batch_generator(mode == 'train', conf['batch_size'], data_, word_to_id['<pad>'], conf['n_step_f'],
+                                 conf['n_step_b'], permute_order=conf.get('permute_input_order'),
+                                 word_drop_rate=conf.get('word_drop_rate')):
         xf, xb, target_ids, sense_ids, instance_ids = batch
         feeds = {
             model.inputs_f: xf,
