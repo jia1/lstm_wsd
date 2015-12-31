@@ -58,7 +58,7 @@ conf = {
 start_time = time.time()
 
 # config
-n_epochs = 100
+n_epochs = 120
 max_sec = 40 * 60
 seed = int(args.seed)
 tf.set_random_seed(seed)
@@ -87,11 +87,13 @@ session.run(tf.initialize_all_variables())
 
 best = 0.0
 i_since_last_best = 0
-max_i_wo_impr = 12
+max_i_wo_impr = 10
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
-    cost_train, acc_train = run_epoch(session, model_train, conf, train_data, 'train', word_to_id)
+    freeze_emb = i < 10
+
+    cost_train, acc_train = run_epoch(session, model_train, conf, train_data, 'train', word_to_id, freeze_emb=freeze_emb)
     cost_val, acc_val = run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
 
     if acc_val > best:
