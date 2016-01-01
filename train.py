@@ -17,8 +17,8 @@ validate = False
 n_epochs = 200
 conf = {
     'batch_size': 100,
-    'n_step_f': 70,
-    'n_step_b': 40,
+    'n_step_f': 100,
+    'n_step_b': 42,
     'n_lstm_units': 74,
     'n_layers': 1,
     'emb_base_std': 0.2,
@@ -28,10 +28,10 @@ conf = {
     'train_embeddings': True,
     'forget_bias': 0.0,
     'state_size': 200,
-    'train_init_state': True,
+    'train_init_state': False,
     'permute_input_order': False,
-    'word_drop_rate': 0.2,
-    'w_penalty': 0.1
+    'word_drop_rate': None,
+    'w_penalty': None
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
