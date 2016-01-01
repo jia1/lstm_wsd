@@ -26,8 +26,8 @@ class Model:
         w_penalty = conf.get('w_penalty')
 
         lr_start = 2.0
-        lr_decay_factor = 0.96
-        lr_min = 0.01
+        lr_decay_factor = 0.97
+        lr_min = 0.001
 
         print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
@@ -126,16 +126,16 @@ class Model:
             state = tf.nn.dropout(state, keep_prob)
 
         # hidden layer
-        with tf.variable_scope('hidden'):
+        with tf.variable_scope('hidden', initializer=tf.random_uniform_initializer(-0.1, 0.1)):
             hidden = rnn_cell.linear(state, state_size, True)
             if is_training:
                 hidden = tf.nn.dropout(hidden, keep_prob)
-        y_hidden = tf.nn.tanh(hidden)
+        # y_hidden = tf.nn.tanh(hidden)
 
         loss = tf.Variable(0., trainable=False)
         n_correct = tf.Variable(0, trainable=False)
 
-        unbatched_states = tf.split(0, batch_size, y_hidden)
+        unbatched_states = tf.split(0, batch_size, hidden)
         unbatched_target_ids = tf.split(0, batch_size, train_target_ids)
         unbatched_sense_ids = tf.split(0, batch_size, train_sense_ids)
         one = tf.constant(1, tf.int32, [1])
@@ -211,11 +211,13 @@ class Model:
                                 'model/backward/MultiRNNCell/Cell0/BasicLSTMCell/Linear/Matrix:0',
                                 'model/hidden/Linear/Matrix:0']
             w_cost = tf.constant(0.0)
+            n_w = tf.constant(0.0)
             for tvar in tvars:
                 if tvar.name in tensors_to_decay:
                     w_cost += tf.nn.l2_loss(tvar)
+                    n_w += tf.to_float(tf.size(tvar))
 
-            self.cost_op += w_cost
+            self.cost_op += w_penalty * w_cost / n_w
 
         # Gradients
         max_grad_norm = 10

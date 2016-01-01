@@ -21,7 +21,7 @@ conf = {
     'n_step_b': 42,
     'n_lstm_units': 74,
     'n_layers': 1,
-    'emb_base_std': 0.2,
+    'emb_base_std': 0.21,
     'input_keep_prob': 0.5,
     'keep_prob': 0.5,
     'embedding_size': 100,
@@ -31,12 +31,13 @@ conf = {
     'train_init_state': False,
     'permute_input_order': False,
     'word_drop_rate': None,
-    'w_penalty': None
+    'w_penalty': .1,
+    'freeze_emb_n_iter': 0
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
 # random conf
-seed = 1234
+seed = 12345
 tf.set_random_seed(seed)
 np.random.seed(seed)
 
@@ -79,7 +80,8 @@ session.run(tf.initialize_all_variables())
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
-    freeze_emb = i < 10
+    freeze_emb = i < conf['freeze_emb_n_iter']
+
     summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id, freeze_emb)
     if validate:
         run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
