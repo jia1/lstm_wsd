@@ -18,10 +18,12 @@ class Model:
 
         emb_base_std = conf['emb_base_std']
         input_keep_prob = conf['input_keep_prob']
-        keep_prob = conf['keep_prob']
         embedding_size = conf['embedding_size']
 
         state_size = conf['state_size']
+
+        keep_prob = conf['keep_prob']
+        w_penalty = conf.get('w_penalty')
 
         lr_start = 2.0
         lr_decay_factor = 0.96
@@ -201,6 +203,21 @@ class Model:
         for tvar in tvars:
             print tvar.name
 
+        # Weight Penalty
+        if w_penalty:
+            print 'USING WEIGHT DECAY'
+            tensors_to_decay = ['model/target_params/W_target:0',
+                                'model/forward/MultiRNNCell/Cell0/BasicLSTMCell/Linear/Matrix:0',
+                                'model/backward/MultiRNNCell/Cell0/BasicLSTMCell/Linear/Matrix:0',
+                                'model/hidden/Linear/Matrix:0']
+            w_cost = tf.constant(0.0)
+            for tvar in tvars:
+                if tvar.name in tensors_to_decay:
+                    w_cost += tf.nn.l2_loss(tvar)
+
+            self.cost_op += w_cost
+
+        # Gradients
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
         self.lr = tf.maximum(lr_min, tf.train.exponential_decay(lr_start, global_step, 60, lr_decay_factor))
@@ -216,9 +233,11 @@ class Model:
         #             grads[i] = tf.mul(grads[i], should_update)
         # self.dbg['grad_embeddings'] = tf.convert_to_tensor(grads[i])
 
+        # Update Parameters
         self.train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
         self.train_op_no_emb = optimizer.apply_gradients(zip(grads[1:], tvars[1:]), global_step=global_step)
 
+        # Summaries
         self.summary_op = tf.merge_all_summaries()
 
 

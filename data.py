@@ -19,7 +19,7 @@ replace_target = re.compile("""<head.*?>.*</head>""")
 replace_newline = re.compile("""\n""")
 replace_dot = re.compile("\.")
 replace_cite = re.compile("'")
-replace_frac = re.compile("frac[\d]+")
+replace_frac = re.compile("[\d]*frac[\d]+")
 rm_context_tag = re.compile('<.{0,1}context>')
 rm_cit_tag = re.compile('\[[eb]quo\]')
 rm_misc = re.compile("[\[\]\$`()%/]")
@@ -29,9 +29,9 @@ rm_misc = re.compile("[\[\]\$`()%/]")
 
 def clean_context(ctx):
     ctx = replace_target.sub(' <target> ', ctx)
-    ctx = replace_newline.sub(' <eop> ', ctx)
-    ctx = replace_dot.sub(' <eos> ', ctx)
-    ctx = replace_cite.sub(' <cite> ', ctx)
+    ctx = replace_newline.sub(' ', ctx)  # (' <eop> ', ctx)
+    ctx = replace_dot.sub(' ', ctx)     # .sub(' <eos> ', ctx)
+    ctx = replace_cite.sub(' ', ctx)    # .sub(' <cite> ', ctx)
     ctx = replace_frac.sub(' <frac> ', ctx)
     ctx = rm_cit_tag.sub(' ', ctx)
     ctx = rm_context_tag.sub('', ctx)
@@ -60,7 +60,7 @@ def load_train_data(se_2_or_3):
         three = load_senteval3_data(train_path3, True)
         return two + three
     else:
-        raise ValueError('2 or 3. Provided: %d' % se_2_or_3)
+        raise ValueError('2, 3 or 23. Provided: %d' % se_2_or_3)
 
 
 def load_test_data(se_2_or_3):
