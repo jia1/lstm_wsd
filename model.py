@@ -26,8 +26,8 @@ class Model:
         w_penalty = conf.get('w_penalty')
 
         lr_start = 2.0
-        lr_decay_factor = 0.97
-        lr_min = 0.001
+        lr_decay_factor = 0.96
+        lr_min = 0.01
 
         print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
