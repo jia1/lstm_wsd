@@ -14,11 +14,11 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
 # config
 se_2_or_3 = 3
 validate = True
-n_epochs = 150
+n_epochs = 130
 conf = {
     'batch_size': 100,
-    'n_step_f': 64,
-    'n_step_b': 64,
+    'n_step_f': 70,
+    'n_step_b': 70,
     'n_lstm_units': 50,
     'n_layers': 1,
     'emb_base_std': 0.,
@@ -37,7 +37,7 @@ conf = {
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
 # random conf
-seed = 12345
+seed = 1234
 tf.set_random_seed(seed)
 np.random.seed(seed)
 
@@ -77,9 +77,16 @@ session.run(tf.initialize_all_variables())
 #     with tf.variable_scope('model'):
 #         saver.restore(session, warm_start)
 
-best = {'i': 0,
-        'cost': 100.,
-        'accuracy': 0.0}
+
+# Validation info
+best = {
+    'i': 0,
+    'cost': 100.,
+    'accuracy': 0.0}
+min_wo_improvement = 10
+last_improved = 0
+
+# Run
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
@@ -92,6 +99,12 @@ for i in range(n_epochs):
             best['i'] = i
             best['cost'] = cost
             best['accuracy'] = accuracy
+            last_improved = 0
+        else:
+            last_improved += 1
+
+        if last_improved > min_wo_improvement:
+            break
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
