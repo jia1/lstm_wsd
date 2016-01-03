@@ -12,26 +12,26 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-se_2_or_3 = 2
-validate = False
-n_epochs = 200
+se_2_or_3 = 3
+validate = True
+n_epochs = 150
 conf = {
     'batch_size': 100,
-    'n_step_f': 100,
-    'n_step_b': 42,
-    'n_lstm_units': 74,
+    'n_step_f': 64,
+    'n_step_b': 64,
+    'n_lstm_units': 50,
     'n_layers': 1,
-    'emb_base_std': 0.21,
+    'emb_base_std': 0.,
     'input_keep_prob': 0.5,
     'keep_prob': 0.5,
     'embedding_size': 100,
     'train_embeddings': True,
     'forget_bias': 0.0,
-    'state_size': 200,
+    'state_size': 100,
     'train_init_state': False,
     'permute_input_order': False,
-    'word_drop_rate': None,
-    'w_penalty': .1,
+    'word_drop_rate': 0.0,
+    'w_penalty': False,
     'freeze_emb_n_iter': 0
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
@@ -77,6 +77,9 @@ session.run(tf.initialize_all_variables())
 #     with tf.variable_scope('model'):
 #         saver.restore(session, warm_start)
 
+best = {'i': 0,
+        'cost': 100.,
+        'accuracy': 0.0}
 for i in range(n_epochs):
     print '::: EPOCH: %d :::' % i
 
@@ -84,10 +87,17 @@ for i in range(n_epochs):
 
     summaries = run_epoch(session, model_train, conf, train_data, 'train', word_to_id, freeze_emb)
     if validate:
-        run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
+        cost, accuracy = run_epoch(session, model_val, conf, val_data, 'val', word_to_id)
+        if best['accuracy'] < accuracy:
+            best['i'] = i
+            best['cost'] = cost
+            best['accuracy'] = accuracy
 
     # for batch_idx, summary in enumerate(summaries):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
     if i % 5 == 0:
         print saver.save(session, '/home/salomons/tmp/model/wsd.ckpt', global_step=i)
+
+print conf
+print best
