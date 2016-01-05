@@ -31,7 +31,7 @@ conf = {
     'train_init_state': False,
     'permute_input_order': False,
     'word_drop_rate': 0.1,
-    'w_penalty': .1,
+    'w_penalty': False,
     'freeze_emb_n_iter': 0
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))

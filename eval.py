@@ -7,7 +7,7 @@ from model import *
 # config
 se_2_or_3 = 3
 se_to_eval = 3
-model_global_step = 75
+model_global_step = 100
 
 conf = pickle.load(open('/home/salomons/tmp/model/conf.pkl'))
 if not conf:
