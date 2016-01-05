@@ -12,7 +12,7 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-se_2_or_3 = 2
+se_2_or_3 = 3
 validate = False
 n_epochs = 110
 conf = {
@@ -31,7 +31,7 @@ conf = {
     'train_init_state': False,
     'permute_input_order': False,
     'word_drop_rate': 0.1,
-    'w_penalty': 0.1,
+    'w_penalty': .1,
     'freeze_emb_n_iter': 0
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
