@@ -190,7 +190,7 @@ def build_vocab(data):
 
     count_pairs = sorted(filtered, key=lambda x: -x[1])
     words, _ = list(zip(*count_pairs))
-    words += ('<pad>',)
+    words += ('<pad>', '<dropped>')
     word_to_id = dict(zip(words, range(len(words))))
 
     return word_to_id
@@ -288,7 +288,7 @@ class Instance:
     pass
 
 
-def batch_generator(is_training, batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch=False, word_drop_rate=None, permute_order=None):
+def batch_generator(is_training, batch_size, data, pad_id, n_step_f, n_step_b, pad_last_batch=False, word_drop_rate=None, permute_order=None, drop_id=None):
     data_len = len(data)
     n_batches_float = data_len / float(batch_size)
     n_batches = int(math.ceil(n_batches_float)) if pad_last_batch else int(n_batches_float)
@@ -318,8 +318,8 @@ def batch_generator(is_training, batch_size, data, pad_id, n_step_f, n_step_b, p
                     n_rm_b = max(1, int(word_drop_rate * n_step_b))
                     rm_idx_f = np.random.random_integers(0, n_step_f-1, n_rm_f)
                     rm_idx_b = np.random.random_integers(0, n_step_b-1, n_rm_b)
-                    xfs[j, rm_idx_f] = pad_id
-                    xbs[j, rm_idx_b] = pad_id
+                    xfs[j, rm_idx_f] = drop_id # pad_id
+                    xbs[j, rm_idx_b] = drop_id # pad_id
 
         # id
         instance_ids = [inst.id for inst in batch]

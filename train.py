@@ -31,8 +31,8 @@ conf = {
     'train_init_state': False,
     'permute_input_order': False,
     'word_drop_rate': 0.1,
-    'w_penalty': 0.1,
-    'freeze_emb_n_iter': 0
+    'w_penalty': False,
+    'freeze_emb_n_iter': 15
 }
 pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
 
@@ -59,7 +59,13 @@ test_ndata = convert_to_numeric(test_data, word_to_id, target_word_to_id, target
 test_size = 0.2 if validate else 0.0
 train_data, val_data = train_test_split(train_ndata, test_size=test_size)
 
+# emb
 init_emb = fill_with_gloves(word_to_id, conf['embedding_size'])
+# std =  init_emb.std(0)
+# print std
+# print max(std)
+# print min(std)
+# exit()
 
 with tf.variable_scope('model', reuse=None):
     model_train = Model(True, conf, n_senses_from_target_id, word_to_id, init_emb)
