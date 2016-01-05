@@ -22,19 +22,21 @@ replace_cite = re.compile("'")
 replace_frac = re.compile("[\d]*frac[\d]+")
 rm_context_tag = re.compile('<.{0,1}context>')
 rm_cit_tag = re.compile('\[[eb]quo\]')
+rm_markup = re.compile('\[.+?\]')
 rm_misc = re.compile("[\[\]\$`()%/]")
 
 # stemmer = porter.PorterStemmer()
 
 
-def clean_context(ctx):
-    ctx = replace_target.sub(' <target> ', ctx)
+def clean_context(ctx_in):
+    ctx = replace_target.sub(' <target> ', ctx_in)
     ctx = replace_newline.sub(' ', ctx)  # (' <eop> ', ctx)
     ctx = replace_dot.sub(' ', ctx)     # .sub(' <eos> ', ctx)
     ctx = replace_cite.sub(' ', ctx)    # .sub(' <cite> ', ctx)
     ctx = replace_frac.sub(' <frac> ', ctx)
     ctx = rm_cit_tag.sub(' ', ctx)
     ctx = rm_context_tag.sub('', ctx)
+    ctx = rm_markup.sub('', ctx)
     ctx = rm_misc.sub('', ctx)
     return ctx
 
