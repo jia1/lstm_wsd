@@ -44,7 +44,8 @@ def clean_context(ctx_in):
 
 
 def split_context(ctx):
-    word_list = re.split(', | +|\? |! |: |; ', ctx.lower())
+    # word_list = re.split(', | +|\? |! |: |; ', ctx.lower())
+    word_list = [word for word in re.split(', | +|\? |! |: |; ', ctx.lower()) if word]
     return word_list  #[stemmer.stem(word) for word in word_list]
 
 
@@ -312,8 +313,10 @@ def batch_generator(is_training, batch_size, data, pad_id, n_step_f, n_step_b, p
             if i * batch_size + j < data_len:
                 n_to_use_f = min(n_step_f, len(batch[j].xf))
                 n_to_use_b = min(n_step_b, len(batch[j].xb))
-                xfs[j, -n_to_use_f:] = batch[j].xf[-n_to_use_f:]
-                xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
+                if n_to_use_f:
+                    xfs[j, -n_to_use_f:] = batch[j].xf[-n_to_use_f:]
+                if n_to_use_b:
+                    xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
                 if is_training and permute_order:
                     xfs[j, -n_to_use_f:] = xfs[j, -n_to_use_f:][np.random.permutation(range(n_to_use_f))]
                     xbs[j, -n_to_use_b:] = xbs[j, -n_to_use_b:][np.random.permutation(range(n_to_use_b))]
