@@ -318,8 +318,10 @@ def batch_generator(is_training, batch_size, data, pad_id, n_step_f, n_step_b, p
                 if n_to_use_b:
                     xbs[j, -n_to_use_b:] = batch[j].xb[-n_to_use_b:]
                 if is_training and permute_order:
-                    xfs[j, -n_to_use_f:] = xfs[j, -n_to_use_f:][np.random.permutation(range(n_to_use_f))]
-                    xbs[j, -n_to_use_b:] = xbs[j, -n_to_use_b:][np.random.permutation(range(n_to_use_b))]
+                    if n_to_use_f:
+                        xfs[j, -n_to_use_f:] = xfs[j, -n_to_use_f:][np.random.permutation(range(n_to_use_f))]
+                    if n_to_use_b:
+                        xbs[j, -n_to_use_b:] = xbs[j, -n_to_use_b:][np.random.permutation(range(n_to_use_b))]
                 if is_training and word_drop_rate:
                     n_rm_f = max(1, int(word_drop_rate * n_step_f))
                     n_rm_b = max(1, int(word_drop_rate * n_step_b))
