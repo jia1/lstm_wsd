@@ -12,7 +12,7 @@ for file in glob.glob('/home/salomons/tmp/tf.log/*'):
     os.remove(file)
 
 # config
-se_2_or_3 = 3
+se_2_or_3 = 2
 validate = False
 n_epochs = 110
 conf = {
@@ -34,7 +34,8 @@ conf = {
     'w_penalty': False,
     'freeze_emb_n_iter': 0
 }
-pickle.dump(conf, open('/home/salomons/tmp/model/conf.pkl', 'w'))
+save_prefix = '0/'
+pickle.dump(conf, open('/home/salomons/tmp/model/' + save_prefix + 'conf.pkl', 'w'))
 
 # random conf
 seed = 1234
@@ -116,7 +117,12 @@ for i in range(n_epochs):
     #     writer.add_summary(summary, i*len(train_data)//batch_size + batch_idx)
 
     if i % 5 == 0:
-        print saver.save(session, '/home/salomons/tmp/model/wsd.ckpt', global_step=i)
+        print saver.save(session, '/home/salomons/tmp/model/' + save_prefix + 'wsd.ckpt', global_step=i)
 
 print conf
 print best
+
+# class OptimalEarlyStop:
+#     def __init__(self):
+#         self.accuracies = []
+#         self.min_wo_improvement = 10

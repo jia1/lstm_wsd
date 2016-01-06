@@ -5,8 +5,8 @@ from model import *
 
 
 # config
-se_2_or_3 = 3
-se_to_eval = 3
+se_2_or_3 = 2
+se_to_eval = 2
 model_global_step = 100
 
 conf = pickle.load(open('/home/salomons/tmp/model/conf.pkl'))
