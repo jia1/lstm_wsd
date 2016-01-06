@@ -34,7 +34,7 @@ conf = {
     'w_penalty': False,
     'freeze_emb_n_iter': 0
 }
-save_prefix = '0/'
+save_prefix = '2/'
 pickle.dump(conf, open('/home/salomons/tmp/model/' + save_prefix + 'conf.pkl', 'w'))
 
 # random conf

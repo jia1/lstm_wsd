@@ -9,7 +9,8 @@ se_2_or_3 = 2
 se_to_eval = 2
 model_global_step = 100
 
-conf = pickle.load(open('/home/salomons/tmp/model/conf.pkl'))
+save_prefix = '3/'
+conf = pickle.load(open('/home/salomons/tmp/model/' + save_prefix + 'conf.pkl'))
 if not conf:
     print '\nWARNING: no conf.pkl file found!\n'
     conf = None
@@ -46,7 +47,7 @@ with tf.Session() as session:
         model = Model(False, conf, n_senses_from_target_id, word_to_id, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/wsd.ckpt-%d' % model_global_step)
+    saver.restore(session, '/home/salomons/tmp/model/' + save_prefix + 'wsd.ckpt-%d' % model_global_step)
 
 
     class Answer:
