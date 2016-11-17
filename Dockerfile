@@ -16,19 +16,21 @@ WORKDIR /src
 # Create data and tmp dir
 RUN mkdir tmp && cd tmp && mkdir model && cd model && mkdir 2 && cd ../..
 
-#Download data
+#Download Glove
 RUN mkdir data && cd data && \
-      ### Download Glove
       curl -O http://nlp.stanford.edu/data/glove.6B.zip && \
-      unzip glove.6B.zip -d ./glove.6B && \
-      ### Download Senseval
-      mkdir senseval2 && cd senseval2 && \
-        curl http://www.hipposmond.com/senseval2/Results/senseval2-corpora.tgz  | tar -xz && \
-      cd .. && \
-      mkdir senseval3 && cd senseval3 && \
-        curl http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.train.tar.gz  | tar -xz && \
-      cd .. && \
-    cd ..
+      unzip glove.6B.zip -d ./glove.6B
+
+### Download Senseval
+#RUN cd data && mkdir senseval2 && cd senseval2 && \
+#	curl http://www.d.umn.edu/~tpederse/Data/lexical-sample.dtd.tar.gz | tar -xz && \
+#	curl http://www.d.umn.edu/~tpederse/Data/Sval2.xml.tar.gz | tar -xz && \
+#	curl http://www.d.umn.edu/~tpederse/Data/Sval2.keys.tar.gz | tar -xz && \
+#        #curl http://www.hipposmond.com/senseval2/Results/senseval2-corpora.tgz | tar -xz && \
+#      cd .. && \
+#      mkdir senseval3 && cd senseval3 && \
+#        curl http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.train.tar.gz | tar -xz && \
+#	curl http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.test.tar.gz | tar -xz
 
 # Add files in the path of the Docker-file to the working directory of the container
 copy . .
