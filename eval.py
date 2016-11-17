@@ -9,8 +9,8 @@ se_2_or_3 = 2
 se_to_eval = 2
 model_global_step = 100
 
-save_prefix = '3/'
-conf = pickle.load(open('/home/salomons/tmp/model/' + save_prefix + 'conf.pkl'))
+save_prefix = '2/'
+conf = pickle.load(open('./tmp/model/' + save_prefix + 'conf.pkl'))
 if not conf:
     print '\nWARNING: no conf.pkl file found!\n'
     conf = None
@@ -41,13 +41,13 @@ target_id_to_sense_id_to_sense = [{sense_id: sense for (sense, sense_id) in sens
 
 with tf.Session() as session:
     print 'Restoring model'
-    ckpt = tf.train.get_checkpoint_state('/home/salomons/tmp/model')
+    ckpt = tf.train.get_checkpoint_state('./tmp/model')
 
     with tf.variable_scope('model'):
         model = Model(False, conf, n_senses_from_target_id, word_to_id, None)
 
     saver = tf.train.Saver()
-    saver.restore(session, '/home/salomons/tmp/model/' + save_prefix + 'wsd.ckpt-%d' % model_global_step)
+    saver.restore(session, './tmp/model/' + save_prefix + 'wsd.ckpt-%d' % model_global_step)
 
 
     class Answer:
@@ -76,7 +76,7 @@ with tf.Session() as session:
                 result.append(a)
 
     print 'Writing to file'
-    path = '/home/salomons/tmp/result'
+    path = './tmp/result'
     with open(path, 'w') as file:
         for a in result:
             first = a.lexelt if se_to_eval == 3 else a.target_word

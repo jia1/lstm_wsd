@@ -1,6 +1,6 @@
 import numpy as np
 
-glove_dir = '/data/glove/'
+glove_dir = './data/glove.6B/'
 
 
 def load_glove(size):
