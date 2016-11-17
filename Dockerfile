@@ -9,12 +9,14 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install sklearn nltk lxml
 
+
+WORKDIR ./mycode
+
 # Add files in the path of the Dockerfile to the working directory of the container
-copy . ./mycode
+copy . .
 
 RUN mkdir tmp && cd tmp && mkdir model && cd model && mkdir 2 && cd ../..
 
-WORKDIR ./mycode
 
 #############################################################################################################
 # Here you can add all kinds of stuff for building your image, e.g install programs or download datasets.
