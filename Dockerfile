@@ -11,19 +11,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install sklearn nltk lxml
 
-WORKDIR ./mycode
+WORKDIR /src
 
 # Create data and tmp dir
 RUN mkdir tmp && cd tmp && mkdir model && cd model && mkdir 2 && cd ../..
 
-#Download glove
-RUN 	mkdir data && cd data && \
-		curl -O http://nlp.stanford.edu/data/glove.6B.zip && \
-		unzip glove.6B.zip -d ./glove.6B && \
-	cd ..
-
-# Download Senseval data
-RUN cd data && \
+#Download data
+RUN mkdir data && cd data && \
+      ### Download Glove
+      curl -O http://nlp.stanford.edu/data/glove.6B.zip && \
+      unzip glove.6B.zip -d ./glove.6B && \
+      ### Download Senseval
       mkdir senseval2 && cd senseval2 && \
         curl http://www.hipposmond.com/senseval2/Results/senseval2-corpora.tgz  | tar -xz && \
       cd .. && \
@@ -31,7 +29,6 @@ RUN cd data && \
         curl http://web.eecs.umich.edu/~mihalcea/senseval/senseval3/data/EnglishLS/EnglishLS.train.tar.gz  | tar -xz && \
       cd .. && \
     cd ..
-
 
 # Add files in the path of the Docker-file to the working directory of the container
 copy . .
