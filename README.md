@@ -6,14 +6,18 @@ This is a work in progress state-of-the-art WSD tool.
 ```
 #!bash
 
-docker build -t kageback/wsd .
-
+docker build -t kageback/wsd . && \
 docker run -it --rm kageback/wsd bash -il
-# Or if you want to change the code from outside the container
+
+```
+
+Or if you want to change the code from outside the container change the last command to:
+```
+#!bash
 docker run -it --rm -v $(pwd):/notebooks/mycode kageback/wsu bash -il
 ```
 
-
+Now run the experiment inside the docker.
 
 ```
 #!bash
