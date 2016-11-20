@@ -1,12 +1,13 @@
 from data import *
 import pickle
 import tensorflow as tf
+import sys
 from model import *
 
 
 # config
-se_2_or_3 = 2
-se_to_eval = 2
+se_2_or_3 = int(sys.argv[1])
+se_to_eval = int(sys.argv[1])
 model_global_step = 100
 
 save_prefix = '2/'

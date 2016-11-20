@@ -5,7 +5,7 @@
 
 # Add job to queue
 qsub -cwd \
-  -e ./log/run.sh.\$JOB_ID.error \
-  -o ./log/run.sh.\$JOB_ID.log \
-  ./run.sh
+  -e ./log/run_SE$1.sh.\$JOB_ID.error \
+  -o ./log/run_SE$1.sh.\$JOB_ID.log \
+  ./run_SE$1.sh
 

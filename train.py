@@ -4,6 +4,7 @@ from glove import *
 import tensorflow as tf
 from sklearn.cross_validation import train_test_split
 import os
+import sys
 import glob
 from model import *
 
@@ -11,8 +12,9 @@ from model import *
 for file in glob.glob('./tmp/tf.log/*'):
     os.remove(file)
 
+
 # config
-se_2_or_3 = 2
+se_2_or_3 = int(sys.argv[1])
 validate = False
 n_epochs = 110
 conf = {
