@@ -1,7 +1,7 @@
 from data import *
 from glove import *
 import tensorflow as tf
-import tensorflow.models.rnn.rnn_cell as rnn_cell
+from tensorflow.python.ops import rnn_cell
 from sklearn.cross_validation import train_test_split
 
 
