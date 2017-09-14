@@ -25,9 +25,9 @@ class Model:
         keep_prob = conf['keep_prob']
         w_penalty = conf.get('w_penalty')
 
-        lr_start = 2.0
-        lr_decay_factor = 0.96
-        lr_min = 0.001
+        lr_start = 2.
+        lr_decay_factor = 0.99
+        lr_min = 0.1
 
         print 'n_step forward/backward: %d / %d' % (n_step_f, n_step_b)
 
@@ -141,6 +141,7 @@ class Model:
         one = tf.constant(1, tf.int32, [1])
 
         self.predictions = tf.Variable(tf.zeros([batch_size], dtype=tf.int64), trainable=False)
+        self.probas={}
 
         # make predictions for all instances in batch
         for i in range(batch_size):
@@ -172,6 +173,8 @@ class Model:
             p_target = tf.slice(p_targets, sense_id, one)
             # p_target_safe = max(0.0001, p_target)
             self.dbg['p_targets_safe'] = p_targets_safe = max(0.0001, p_targets)
+            self.probas[i]=p_targets_safe
+
             self.dbg['mul'] = mul = tf.mul(answer, tf.log(p_targets_safe))
             loss += - tf.reduce_sum(mul)
             # loss += - tf.log(p_target_safe)
@@ -222,8 +225,8 @@ class Model:
         # Gradients
         max_grad_norm = 10
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost_op, tvars), max_grad_norm)
-        self.lr = tf.maximum(lr_min, tf.train.exponential_decay(lr_start, global_step, 60, lr_decay_factor))
-        optimizer = tf.train.MomentumOptimizer(self.lr, 0.1)
+        self.lr = tf.maximum(lr_min, tf.train.exponential_decay(lr_start, global_step, 200, lr_decay_factor))
+        optimizer = tf.train.MomentumOptimizer(self.lr, 0.5)
 
         # scaling down the learning for the embedings in the beginning
         # w = tf.constant(should_update, shape=[vocab_size, embedding_size])
@@ -299,7 +302,7 @@ def run_epoch(session, model, conf, data_, mode, word_to_id, freeze_emb=False):
     cost_epoch = cost / n_batches
     accuracy_epoch = accuracy / n_batches
     lr /= n_batches
-    print '%s --> \tcost: %f, \taccuracy: %f, \tlr: %f' % (mode.upper(), cost_epoch, accuracy_epoch, lr)
+    print '%s --> \tcost: %f, \taccuracy: %f, n_batches: %f \tlr: %f' % (mode.upper(), cost_epoch, accuracy_epoch, n_batches, lr)
 
     # if mode == 'train':
     #     return summaries

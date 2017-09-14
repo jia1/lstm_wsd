@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="effect-n">
+   <commentary>
+   </commentary>
+   
+   <sense n="1" type="Abstraction" name="consequence" group="1">
+      <commentary>
+	 Something that is caused by a preceding phenomenon.
+      </commentary>
+      <examples>
+	 One effect of John's decision was a drop in his grade-point average.
+	 The magnetic effect produced by the electric current is very strong.
+	 The effects of the election were deep and far-reaching.
+	 Her outfit certainly had an effect on me!
+	 John dozed off while under the effect of the anesthetic.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    1 4
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="2" type="" name="general impression" group="1">
+      <commentary>
+	 An outward appearance or impression, in general terms.  No clear cause attached.  
+      </commentary>
+      <examples>
+	 He did it just for effect.
+	 She retained that bold effect in her reproduction of the painting.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    2 5
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="3" type="" name="validity" group="1">
+      <commentary>
+	 Still producing new consequences.  Probably only the phrase "in effect".
+      </commentary>
+      <examples>
+	 Unfortunately, the law is still in effect.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    3
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="4" type="" name="theme" group="1">
+      <commentary>
+	 The central point of an artistic work.  The message.
+      </commentary>
+      <examples>
+	 The central effect of Heller's Catch-22 is the absurdity of bureaucratic structures.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    6
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="5" type="" name="property" group="1">
+      <commentary>
+	 Usually left behind by a dead person, the property that a person owns (or used to own).
+	 Often "personal".
+      </commentary>
+      <examples>
+	 John left me all his personal effects.
+	 I gave the mugger my wallet and some other personal effects.
+	 The suspect returned to the apartment to gather his effects.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    -
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <WORD_META authors="hertlerb ajarrett" sample_score="-"/>
+</inventory>		

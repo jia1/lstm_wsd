@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="do-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="act, engage in, undertake, execute, cause, make" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         She does research in early child development.
+         I did the washing and my sister did the cooking.
+         Just do your job.
+         Who did the damage to your car?
+         Her husband does law.
+         He did drugs in college.
+         I'd like to do the dining room in apricot.
+         Don't do me like that!
+         She hates the way he did her hair.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,3,5,6,8,9,12</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="fare, get along" type="">
+      <commentary>
+         NP DO ADV (no Direct Object)
+      </commentary>
+      <examples>
+         How are you doing these days?
+         He's doing great as our new CTO.
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="suffice or satisfy" type="">
+      <commentary>
+         NP AUX DO
+      </commentary>
+      <examples>
+         A simple 'thank you' will do.
+         This arrangement of the furniture just won't do.
+      </examples>
+      <mappings>
+         <wn version="2.1">7</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="4" name="serve time (usually in prison)" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         He did ten years in San Quentin.
+         She did two years in the Peace Corps before college.
+      </examples>
+      <mappings>
+         <wn version="2.1">10</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="5" name="manage, carry on" type="">
+      <commentary>
+         (occurs with modal, e.g. COULD, MAY HAVE TO)
+      </commentary>
+      <examples>
+         We may do without running water next week.
+         This class could have done with a bit more studying and less talking.
+      </examples>
+      <mappings>
+         <wn version="2.1">11</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="6" name="travel or go" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         The soldiers did 20 miles a day over the rough terrain.
+         This old car will probably not do over 60 miles per hour.
+      </examples>
+      <mappings>
+         <wn version="2.1">13</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>

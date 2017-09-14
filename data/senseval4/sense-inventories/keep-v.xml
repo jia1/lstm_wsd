@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="keep-v">    
+   <commentary>
+	All VPCs included in the last entry of the file.
+        Two VPCs (keep_in_hand, keep_track) do not have WordNet entries.
+   </commentary>
+   <sense group="1" n="1" name="maintain or preserve a particular condition, state, or activity" type="">
+      <commentary>
+        NP1 KEEP NP2[condition or state] (e.g. I kept pace. I kept my sanity.)
+        NP1[+agent] KEEP NP2[+patient] ADJ[condition or state] (e.g. I kept her happy.)
+
+        NP1 KEEP V-ing[activity] (e.g. I kept singing.)
+        NP1[+agent] KEEP NP2[+patient] V-ing[activity] (e.g. It kept him wondering.)
+
+        NP1[+patient] KEEP PP[temporal] (e.g. Parsley keeps for about a week.)
+        NP1[+agent] KEEP NP2[+patient] PP[temporal] (e.g. You can keep parsley for about a week.)
+      </commentary>
+      <examples>
+        The negotiators managed to keep their cool through the crisis.
+        They kept radio silence for two hours.
+        Sally couldn't seem to keep her wits about her yesterday.
+        The delegate kept his temper in check during the speech.
+
+        The ship's log needs to be kept up-to-date.
+        The work in that class will keep you on your toes.
+        He kept his family alive that winter by hunting deer and rabbit.
+        The operating room needs to be kept sterile.
+        I always keep my apartment clean.
+
+        The software giant complained that the EU kept changing the rules for compliance.
+        The rescue workers kept digging through the rubble all night.
+        Refrigerator kept buzzing all night.        
+        His cryptic remark kept her guessing all day.
+
+        This matter will keep until the morning.
+        That chocolate cake will not keep long!
+        Potatoes and onions keep longer in a dark, dry environment.
+        Those photos will not keep well in the sun.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,8,12,14,22</wn>
+         <omega></omega><pb>keep.02,keep.06</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="2" type="" name="retain ownership, access or title to something" group="1">
+      <commentary>
+        NP1[possessor] KEEP NP2[+possession of NP1]
+
+        Note: FOCUS is on NP1's ownership of NP2
+      </commentary>
+      <examples>
+        Keep the change.
+        We need to keep some cash for rainy day.
+        Can I keep my email address after I graduate? 
+        She kept her maiden name when she got married.
+        The deposed monarch was allowed to keep his personal servants and cook.
+        He's keeping an adjunct position at the university while working for a start-up.
+        After the stock market bust, they couldn't keep both their weekend cottage and their sail boat.
+      </examples>
+      <mappings>
+         <wn version="2.1">3,10,17</wn>
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb>keep.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="3" type="" name="cause to stay in place; retain something in a particular place" group="1">
+      <commentary>
+        NP[+agent] KEEP NP[+object] PP[+locative]
+
+        Note: FOCUS is on the NP1's cause of NP2 in a particular place.
+      </commentary>
+      <examples>
+        Where do you keep your coffee grinder?
+        They never kept guns in their house.
+        John can't keep this much food in his small refrigerator.
+        Keep these knives out of harms way in a drawer.
+        Her company keeps old email on backup DVDs.
+        Keep your hands in your pocket for warmth.
+        Doctor adviced me to keep my foot on ice for a few minutes.
+        He kept goats in his back yard, despite the zoning laws.
+        You must build structures if you are going to keep bees properly.
+        The deputy minister kept a mistress in his New York penthouse.
+        She keeps an apartment in Paris for her shopping trips.
+        Polly was kept after school twice this week for disrupting class.
+      </examples>
+      <mappings>
+         <wn version="2.1">9,16,18,19,20,21</wn>
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="4" type="" name="restrain, hold back, or prevent from doing something" group="1">
+      <commentary>
+        NP[+agent/+instrument] KEEP NP[+patient] (FROM+VERB-ing)
+        Note: Sometimes (FROM+VERB-ing) is implied.
+      </commentary>
+      <examples>
+        What has been keeping them (from coming) for so long?
+        Nothing could keep me from falling asleep last night.
+        The senator couldn't keep from reminding everyone that he had first proposed that bill two years earlier.
+        They bought back enough stock to keep their competitor from buying them out.
+        Another round of funding will keep the wolves from the door for at least six months. (metaphoric)
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>
+         <wn lemma="" version=""></wn>
+         <omega></omega><pb>keep.04</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="5" type="" name="conform to, honor" group="1">
+      <commentary>
+        NP[+agent] KEEP NP[promise,belief,agreement,religious event]
+      </commentary>
+      <examples>
+        He always keeps his promises.
+        The firm has kept to the original conditions of the contract.
+        Can you keep a secret?
+        She taught her children to keep the sabbath.
+        Sally isn't keeping her vow to stop smoking.
+        Their commune decided to start keeping Druid holidays.
+      </examples>
+      <mappings>
+         <wn version="2.1">5,13</wn>
+         <wn lemma="" version=""></wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="6" type="" name="care for, sustain, look after" group="1">
+      <commentary>
+        NP1[+agent] KEEP NP2[+target/+benefactor]
+      </commentary>
+      <examples>
+        I keep the shop for Mary while she picks up her children from daycare.
+        Good luck and may God keep you!
+        There's little to earn and many to keep.
+      </examples>
+      <mappings>
+         <wn version="2.1">7,11,15</wn>
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="7" name="observe, follow along, synchronize, track" type="">
+      <commentary>
+        NP1 KEEP (TRACK, TIME, SCORE, RECORD, etc) 
+      </commentary>
+      <examples>
+        How do you keep time around the world?
+        We don't keep track of the news anymore.
+        Who is keeping score?
+        During the audit they discovered that the accountant had kept sloppy records.
+      </examples>
+      <mappings>
+         <wn version="2.1">6</wn>
+         <omega></omega><pb>keep.03</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="8" type="vpc" name="multi-word and verb particle constructions" group="1">  
+      <commentary>
+        Choose this tag for the following constructions:
+keep_abreast
+keep_an_eye_on
+keep_apart
+keep_away
+keep_back
+keep_company
+keep_down
+keep_going
+keep_guard
+keep_in
+keep_in_hand
+keep_in_line
+keep_mum
+keep_note
+keep_off
+keep_on
+keep_one's_distance
+keep_one's_eyes_off
+keep_one's_eyes_open
+keep_one's_eyes_peeled
+keep_one's_hands_off
+keep_one's_mouth_shut
+keep_one's_nose_to_the_grindstone
+keep_one's_shoulder_to_the_wheel
+keep_open
+keep_out
+keep_pace
+keep_quiet
+keep_step
+keep_tabs_on
+keep_to_oneself
+keep_track
+keep_up
+      </commentary>
+      <examples> 
+        keep_abreast
+  He reads three newspapers to keep abreast of current affairs.
+keep_an_eye_on
+  Could you please keep an eye on the soup so it doesn't boil over?
+keep_apart
+  The two dogs had to be kept apart because otherwise they would fight.
+keep_away
+  They couldn't keep away the reporters.
+keep_back
+  She couldn't keep back the tears.
+  They kept back the security deposit until they were able to inspect the apartment
+  The teacher recommended keeping Johnny back a grade next year.
+keep_company
+  Why don't you keep me company while I run this errand?
+keep_down
+  This filter keeps down the amount of junk email I need to process.
+  They can't keep a people down forever.
+  Mary couldn't keep food down at all yesterday.
+keep_going
+  The party kept going until 4 am.
+  This money should keep you going for a couple of months.
+  He kept the project going as long as possible.
+  Sally keeps going to the same hairdresser even though she complains about him.
+keep_guard
+  The jewels over which they kept guard were stolen.
+keep_in
+  The cats need to be kept in tonight.
+keep_in_hand
+  These goldsmiths and bankers always keep in hand part of the money they have received.
+keep_in_line
+  That teacher cannot seem to keep her children in line.
+keep_mum
+  Please keep mum about David's surprise party tomorrow night.
+keep_note
+  She kept note of how often Sally took a coffee break.
+keep_off
+  He's managed to keep himself off drugs for a year now.
+  The sign says to keep off the grass.
+keep_on
+  As we lost our fortune, we cannot afford to keep the servants on any longer.
+keep_one's_distance
+  Mary keeps her distance from everyone at work.
+keep_one's_eyes_off
+  Hey, keep your eyes off my younger sister!
+keep_one's_eyes_open
+  Keep your eyes open for a gas station.
+keep_one's_eyes_peeled
+  John kept his eyes peeled for speed traps along I-93.
+keep_one's_eyes_skinned
+  The secret service man kept his eyes skinned for snipers up on the buildings.
+keep_one's_hands_off
+  Bob just couldn't keep his hands off the box of dark chocolates.
+keep_one's_mouth_shut
+  Bill decided to keep his mouth shut about his wife's new hair color.
+keep_one's_nose_to_the_grindstone
+  Tom kept his nose to the grindstone for eight months and finished his dissertation.
+keep_one's_shoulder_to_the_wheel
+  We must keep our shoulder to the wheel until this project is finished.
+keep_open
+  Sally wants to keep her options open.
+keep_out
+  The elevated train keeps out the light from the street below.
+keep_pace
+  We could not keep pace with the lead runner after the first two miles.
+keep_quiet
+  Let's keep quiet about our idea until we can file a patent on it.
+keep_step
+  The little boy tried hard to keep step with his father.
+keep_tabs_on
+  The government keeps tabs on the dissidents.
+keep_to_oneself
+   The old man keeps to himself most of the time.
+keep_track
+   You can use last visit cookie to keep track of new messages.
+keep_up
+  Bob could not keep up with the class assignments.
+  Keep up your excellent work.
+  The gardner kept up the grounds of the old estate.
+  She keeps up on all the current fashion trends.
+   A cup of espresso kept me up until three in the morning.
+      </examples>
+      <mappings>  
+         <wn lemma="keep_abreast" version="2.1">1</wn>
+         <wn lemma="keep_an_eye_on" version="2.1">1</wn>
+         <wn lemma="keep_apart" version="2.1">1</wn>
+         <wn lemma="keep_away" version="2.1">1</wn>
+         <wn lemma="keep_back" version="2.1">1,2,3</wn>
+         <wn lemma="keep_company" version="2.1">1</wn>
+         <wn lemma="keep_down" version="2.1">1,2,3</wn>
+         <wn lemma="keep_going" version="2.1">1,2,3,4</wn>
+         <wn lemma="keep_guard" version="2.1">1</wn>
+         <wn lemma="keep_in" version="2.1">1</wn>
+         <wn lemma="keep_in_line" version="2.1">1</wn>
+         <wn lemma="keep_mum" version="2.1">1</wn>
+         <wn lemma="keep_note" version="2.1">1</wn>
+         <wn lemma="keep_off" version="2.1">1,2</wn>
+         <wn lemma="keep_on" version="2.1">1</wn>
+         <wn lemma="keep_one's_distance" version="2.1">1</wn>
+         <wn lemma="keep_one's_eyes_off" version="2.1">1</wn>
+         <wn lemma="keep_one's_eyes_open" version="2.1">1</wn>
+         <wn lemma="keep_one's_eyes_peeled" version="2.1">1</wn>
+         <wn lemma="keep_one's_eyes_skinned" version="2.1">1</wn>
+         <wn lemma="keep_one's_hands_off" version="2.1">1</wn>
+         <wn lemma="keep_one's_mouth_shut" version="2.1">1</wn>
+         <wn lemma="keep_one's_nose_to_the_grindstone" version="2.1">1</wn>
+         <wn lemma="keep_one's_shoulder_to_the_wheel" version="2.1">1</wn>
+         <wn lemma="keep_open" version="2.1">1</wn>
+         <wn lemma="keep_out" version="2.1">1</wn>
+         <wn lemma="keep_pace" version="2.1">1</wn> 
+         <wn lemma="keep_quiet" version="2.1">1</wn>
+         <wn lemma="keep_step" version="2.1">1</wn>
+         <wn lemma="keep_tabs_on" version="2.1">1</wn>
+         <wn lemma="keep_to_oneself" version="2.1">1</wn>
+         <wn lemma="keep_up" version="2.1">1,2,3,4,5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+    <WORD_META authors="ahouston,duffielc,hwangd" sample_score="-"/>  
+</inventory>
+

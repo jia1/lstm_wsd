@@ -8,7 +8,7 @@ from model import *
 # config
 se_2_or_3 = int(sys.argv[1])
 se_to_eval = int(sys.argv[1])
-model_global_step = 100
+model_global_step = 50
 
 save_prefix = '2/'
 conf = pickle.load(open('./tmp/model/' + save_prefix + 'conf.pkl'))
@@ -65,8 +65,8 @@ with tf.Session() as session:
             model.train_sense_ids: sense_ids
         }
 
-        predictions = session.run(model.predictions, feed_dict=feed)
-
+        predictions= session.run(model.predictions, feed_dict=feed)
+        #predictions, probas = session.run(model.predictions, model.probas, feed_dict=feed)
         for i, predicted_sense_id in enumerate(predictions):
             if batch_id * conf['batch_size'] + i < len(test_ndata):
                 a = Answer()
@@ -74,10 +74,11 @@ with tf.Session() as session:
                 a.lexelt = target_word_to_lexelt[a.target_word]
                 a.instance_id = instance_ids[i]
                 a.predicted_sense = target_id_to_sense_id_to_sense[target_ids[i]][predicted_sense_id]
+		        #a.probas=probas[i]
                 result.append(a)
 
     print 'Writing to file'
-    path = './tmp/result'
+    path = './result_allproba.txt'
     with open(path, 'w') as file:
         for a in result:
             first = a.lexelt if se_to_eval == 3 else a.target_word

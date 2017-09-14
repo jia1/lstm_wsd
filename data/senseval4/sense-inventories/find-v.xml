@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="find-v">    
+   <commentary>
+     Includes VPC find_out, find_fault
+   </commentary>
+   <sense n="1" type="" name="locate, discover, or encounter" group="1">  
+      <commentary>
+	NP[+agent] FIND NP[+target]
+        NP[+discoverer]  FIND NP[+state]/SCOMP
+        Includes VPC find_out
+      </commentary>
+      <examples>
+	I found a great little bookstore on Elm Street.
+	Did you ever find your glasses?
+	They have found some investors for their new venture.
+	Although painfully shy, Sally found her voice to say 'no thank you'.
+	This literary device is not found until the late eighteenth century.
+	The bullet found its mark, right between the eyes.
+        We found that squirrels had been building nests in the attic.
+        They found evidence of misconduct in the accounting records of that firm.
+        Crick and Watson found that the structure of DNA is a double helix.
+        The company found that someone was stealing their patents.
+        I woke up to find myself in a twisty maze of little passages. (reflexive)
+        John was shocked when he found out that he was adopted.
+        We need to find out what time the train leaves tomorrow.
+        The teenagers were worried that they'd be found out.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,3,6,7,8,9,12,13,14,15,16</wn>   
+         <wn lemma="find_out" version="2.1">1</wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="2" type="" name="solve or calculate" group="1">  
+      <commentary>
+	NP[+agent FIND NP/SCOMP[+result]
+        Includes VPC find_out
+      </commentary>
+      <examples>
+  	Find the product of these two numbers.
+	We need to find whether the shelf is strong enough to hold this.
+        They are trying to find out how much to charge for the installation.
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>   
+         <wn lemma="find_out" version="2.1">1</wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="3" type="" name="opine or believe" group="1">  
+      <commentary>
+	NP[+experiencer]  FIND NP[+object] PRED/SCOMP[+attributive]
+      </commentary>
+      <examples>
+	I found the film to be tiresome and predictable.
+	She asked Tom how he was finding the new job.
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>   
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="4" type="" name="accumulate a resource" group="1">  
+      <commentary>
+	NP[+agent] FIND NP[+resource] PP/SCOMP[+purpose]
+      </commentary>
+      <examples>
+       	They couldn't find the money to send their kids to college.
+	If you find the time, could you take the dog for a walk?  (Idiomatic)
+	Their nation found the will to endure great hardships.
+	We are trying to find the resources to fund this project.
+      </examples>
+      <mappings>
+         <wn version="2.1">10</wn>
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="5" type="" name="rule or pronounce, usually legal" group="1">  
+      <commentary>
+	NP[+agent][+legal] FIND NP[+patient] PRED[+attributive]
+      </commentary>
+      <examples>
+	He was found innocent on all three charges.
+	Will the jury find her guilty of insider trading?
+      </examples>
+      <mappings>
+         <wn version="2.1">11</wn>   
+         <wn lemma="" version="2.1"></wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="6" type="" name="blame, criticize" group="1">  
+      <commentary>
+         NP[+agent] FIND FAULT with NP[+object]
+         Is VPC find_fault
+      </commentary>
+      <examples>
+        We could find no fault with John's repairs to our car.
+        He was always finding fault with his co-workers.
+      </examples>
+      <mappings>
+         <wn version="2.1"></wn>   
+         <wn lemma="find_fault" version="2.1">1</wn>
+         <omega></omega><pb>find.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>   
+   <WORD_META authors="ahouston,duffielc" sample_score="-"/>  
+</inventory>
+

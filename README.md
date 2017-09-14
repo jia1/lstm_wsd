@@ -6,8 +6,8 @@ This is a work in progress state-of-the-art WSD tool.
 ```
 #!bash
 
-docker build -t kageback/wsd . && \
-docker run -it --rm kageback/wsd bash -il
+sudo docker build -t kageback/wsd . && \
+sudo docker run -it --rm kageback/wsd bash -il
 
 ```
 

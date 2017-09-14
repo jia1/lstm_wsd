@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="prepare-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="to put together, assemble, concoct" type="">
+      <commentary>
+        NP PREPARE NP (-human, usually)
+      </commentary>
+      <examples>
+         He is going to prepare breakfast for the whole crowd.
+         I haven't prepared my speech yet.
+         It turns out the minister had been preparing the king's overthrow for years.
+         She prepared the navy beans by first soaking them in water overnight.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,3,4,3</wn>
+         <omega/>
+         <pb>prepare.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="to make ready, fit out" type="">
+      <commentary>
+        NP PREPARE (instransitive0
+        NP PREPARE NP (transitive) 
+        NP PREPARE SCOMP 
+      </commentary>
+      <examples>
+         I will prepare Mary for the worst.
+         She prepared the children for school every morning.
+         They are preparing him for the diplomatic core.
+         The shop is prepared to sail at dawn.
+         John hasn't prepared adequately for the bar exam.
+      </examples>
+      <mappings>
+         <wn version="2.1">5,6,7</wn>
+         <omega/>
+         <pb>prepare.02</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>

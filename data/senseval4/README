@@ -1,0 +1,14 @@
+The format for the lexical sample files is similar to previous years,
+except for an addition of the wordnet (wn) and wordnet version
+(wn-version) attributes to the answer tag which represent the wordnet
+sense grouping for the OntoNotes sense id (senseid) attribute.
+
+The sense-inventories directory contains the sense grouping
+information for the lemmas.
+
+for scoring purposes, we will be using the senseval 3 scorer2
+software. you can use the same scorer to tune your systems, and the
+format of the answers should adhere to its requirement,
+
+information on the scorer software is available at:
+http://www.cse.unt.edu/~rada/senseval/senseval3/scoring/

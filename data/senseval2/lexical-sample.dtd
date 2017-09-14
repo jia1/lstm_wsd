@@ -36,7 +36,7 @@ of the data used for senseval.
 <!ELEMENT instance (answer*, context)>
 
 <!ATTLIST instance
-          id  ID #REQUIRED
+          id  CDATA #REQUIRED
           docsrc CDATA #IMPLIED
           topic  CDATA #IMPLIED>
 

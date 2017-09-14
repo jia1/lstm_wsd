@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="value-n">
+   <commentary>
+      
+   </commentary>
+
+   <sense n="1" type="Subjective" name="quality" group="1">
+      <commentary>
+	 The quality that renders something desirable or useful or important
+      </commentary>
+      <examples>
+	 The Shakespearean Shylock is of dubious value in the modern world.
+         George makes rude comments for shock value.
+      </examples>
+      <mappings>
+	 <wn version="2.0">2</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="2" type="Objective" name="quantity" group="1">
+      <commentary>
+	 An established numerical quantity measured or assigned or computed,
+	 also the amount of money that is considered to be a fair equivalent
+	 for  something else.
+      </commentary>
+      <examples>
+	 The value assigned was 16 milliseconds.
+         He tried to estimate the value of the produce at normal prices.
+      </examples>
+      <mappings>
+	 <wn version="2.0">1 3</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="3" type="" name="moral principal" group="1">
+      <commentary>
+	 An ideal accepted by some individual or group
+      </commentary>
+      <examples>
+	 He has old fashioned values.
+      </examples>
+      <mappings>
+	 <wn version="2.0">6</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="4" type="Music" name="duration of a musical note" group="1">
+      <commentary>
+	 The relative duration of a musical note, time value, note value
+      </commentary>
+      <examples>
+	 The music notes with the flag have a shorter time-value.
+         Triplets take up the same space as two notes of that value.
+      </examples>
+      <mappings>
+	 <wn version="2.0">5</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+
+   <sense n="5" type="Color" name="relative darkness" group="1">
+      <commentary>
+	 Relative darkness or lightness of a color
+      </commentary>
+      <examples>
+      I establish the colors and principal values by organizing the painting
+      into three values - dark, medium... and light"- Joe Hing Lowe
+      </examples>
+      <mappings>
+	 <wn version="2.0">4</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <!-- more senses go here -->
+   <WORD_META authors="cstocker ajarrett" sample_score=""/>
+</inventory>
+                                                                                                                   
+

@@ -1,3 +1,4 @@
 .idea
 smac-output
 *.pyc
+data/glove*

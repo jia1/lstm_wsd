@@ -16,7 +16,7 @@ for file in glob.glob('./tmp/tf.log/*'):
 # config
 se_2_or_3 = int(sys.argv[1])
 validate = False
-n_epochs = 110
+n_epochs = 50
 conf = {
     'batch_size': 100,
     'n_step_f': 70,
@@ -24,19 +24,19 @@ conf = {
     'n_lstm_units': 74,
     'n_layers': 1,
     'emb_base_std': 0.2,
-    'input_keep_prob': 0.5,
-    'keep_prob': 0.5,
+    'input_keep_prob': 1,
+    'keep_prob': 1,
     'embedding_size': 100,
     'train_embeddings': True,
     'forget_bias': 0.0,
-    'state_size': 200,
+    'state_size': 600,
     'train_init_state': False,
     'permute_input_order': False,
     'word_drop_rate': 0.1,
     'w_penalty': False,
     'freeze_emb_n_iter': 0
 }
-save_prefix = '2/'
+save_prefix = str(se_2_or_3)+'/'
 pickle.dump(conf, open('./tmp/model/' + save_prefix + 'conf.pkl', 'w'))
 
 # random conf

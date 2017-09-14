@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="bill-n">
+   <commentary>
+   </commentary>
+   <sense n="1" type="" name="a written list of particular things being offered" group="1">
+      <commentary>
+        BILL[+list][+offering]
+      </commentary>
+      <examples>
+         Nothing appealed to me on the new bistro's bill of fare.
+	John isn't on the bill of this production of The Tempest.
+      </examples>
+      <mappings>
+         <wn version="2.1">4,5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="2" type="" name="a written notice that announces or advertises something" group="1">
+      <commentary>
+        BILL[+notice][+announcement]
+      </commentary>
+      <examples>
+        Post no bills on this wall.
+        Who dropped those advertising bills all over the street?
+      </examples>
+      <mappings>
+         <wn version="2.1">6,8</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="3" type="" name="a statute or draft not yet become law" group="1">
+      <commentary>
+        BILL[+statute][-legal]
+      </commentary>
+      <examples>
+       I don't think this bill will pass in the Senate.
+        Mary introduced a new highway safety bill last week.
+      </examples>
+      <mappings>
+         <wn version="2.1">1</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="4" type="" name="an itemized statement of money owed" group="1">
+      <commentary>
+       BILL [+list][+invoice]
+      </commentary>
+      <examples>
+       My heating bill this month seems really high.
+       I sent my client a bill for two thousand dollars for work I completed since August.
+      </examples>
+      <mappings>
+         <wn version="2.1">2</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="5" type="" name="a printed note that is legal tender" group="1">
+      <commentary>
+        BILL[+document][+currency]
+      </commentary>
+      <examples>
+        John flashed a hundred dollar bill at the waiter.
+        Take these stacks of bills and deposit them in the bank.
+         Do you think this bill looks counterfeit?
+      </examples>
+      <mappings>
+         <wn version="2.1">3</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="6" type="" name="the mouth of a bird" group="1">
+      <commentary>
+        BILL[+body_part][+mouth]
+      </commentary>
+      <examples>
+       Woodpeckers use their bills to extract insects from inside tree bark.
+       The rooster pecked my hand with his sharp bill.
+      </examples>
+      <mappings>
+         <wn version="2.1">7</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="7" type="" name="a long-handled saw" group="1">
+      <commentary>
+        BILL[+tool][+saw]
+      </commentary>
+      <examples>
+       The gardener used a bill to prune branches off the dogwood trees.
+      </examples>
+      <mappings>
+         <wn version="2.1">9</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="8" type="" name="brim of a hat that projects forward, visor" group="1">
+      <commentary>
+        BILL[+clothing][+hat]
+      </commentary>
+      <examples>
+        The teenager wore the bill of his cap backwards.
+         I like this hat with the long bill because it keeps the sun out of my eyes.
+      </examples>
+      <mappings>
+         <wn version="2.1">10</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <sense n="9" type="" name="the point of a ship anchor's fluke" group="1">
+      <commentary>
+        BILL[+tool][+anchor]
+      </commentary>
+      <examples>
+        John didn't realize the bill of the anchor fluke had struck hard coral.
+      </examples>
+      <mappings>
+         <wn version="Merriam-Webster online">3(noun1)</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>
+

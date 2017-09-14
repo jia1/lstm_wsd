@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="job-n">
+   <commentary>
+   </commentary>
+   
+   <sense n="1" type="Abstraction" name="paid position" group="1">
+      <commentary>
+	 A regular position that usually earns money.  A career.
+	 Does not refer to actual work or responsibility, only a position.
+      </commentary>
+      <examples>
+	 John had trouble finding a job after he graduated with a Linguistics major.
+	 My summer job as a lifeguard was a real pain in the butt.
+	 When the economy goes sour, lots of people can lose their jobs.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    1
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   
+   <sense n="2" type="Activity" name="task" group="1">
+      <commentary>
+	 The actual work that a person does.  Refers to an activity, not a position.
+	 Can be a regular activity or a specific piece of work; either paid or unpaid.
+      </commentary>
+      <examples>
+	 When I worked as a lifeguard, my job was to watch the pool.
+	 He came to work and did his job every day.
+	 It's a tough job, but somebody's got to do it.
+	 You did a good job on that midterm.
+	 This looks like a job for Superman!
+	 Painting the barn is going to be a huge job.
+	 I brought my wife to the job site (the site where the task takes place).
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    4 2 3
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="3" type="Event" name="being at work" group="1">
+      <commentary>
+	 The state of being at work.  Probably only used in the expression "on the job".
+      </commentary>
+      <examples>
+	 Intelli-Soft has had a record number of on-the-job accidents this month.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    5
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="4" type="Entity" name="object being worked on" group="1">
+      <commentary>
+	 Probably a rare usage; an object that is the subject of a job.
+      </commentary>
+      <examples>
+	 I held the job in my left hand and worked on it with my left.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    6
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+
+   <sense n="5" type="Abstraction" name="a difficulty" group="1">
+      <commentary>
+	 A general way of referring to something difficult or problematic.
+      </commentary>
+      <examples>
+	 It's always a job to contact him when he's eating.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    7
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="6" type="Event" name="destruction" group="1">
+      <commentary>
+	 An act of destruction.  Probably only used in the expression "do a job on".  This is a specific kind of task.
+      </commentary>
+      <examples>
+	 That barber really did a job on your hair, John.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	  8  
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="7" type="Event" name="robbery" group="1">
+      <commentary>
+	 The act of robbing or burglarizing; pulling off a caper.  This is a specific kind of task.
+      </commentary>
+      <examples>
+	 The gang pulled off a bank job in St. Louis.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    9
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="8" type="Entity" name="Biblical figure" group="2">
+      <commentary>
+	 A character in the Old Testament who suffers a lot.  Also used in a metaphoric way for other long-suffering people.
+      </commentary>
+      <examples>
+	 And Job did sacrifice three oxen to the Lord, though the Lord did afflict him with boils.
+	 The prisoner, unjustly convicted of murder, was a patient and Job-like figure.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    10 11
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="9" type="Abstraction" name="Biblical book" group="2">
+      <commentary>
+	 Part of the title of a book in the Bible.  Though the title is named after the character Job, this sense does not refer to him.
+	 Used frequently as a shorthand for quotations.
+      </commentary>
+      <examples>
+	 "All the days of my appointed time shall I wait, till my change come," (Job 14:14).
+	 John entertained his little brother by reading aloud from the Book of Job.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    13
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="10" type="Abstraction" name="computer program" group="1">
+      <commentary>
+	 In computer science, a program application that may consist of several steps but is a single logical unit.
+      </commentary>
+      <examples>
+	 I wrote a nifty job for Windows that automatically emails itself to everyone in your address book.
+      </examples>
+      <mappings>
+	 <wn version="2.0">
+	    12
+	 </wn>
+	 <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+
+   <WORD_META authors="hertlerb" sample_score="-"/>
+</inventory>		

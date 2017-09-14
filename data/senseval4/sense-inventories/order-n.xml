@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="order-n">
+   <commentary>
+      
+   </commentary>
+
+   <sense n="1" type="" name="command" group="1">
+      <commentary>
+         a command given by a superior that must be obeyed (often plural)(often
+         from a military superior or law enforcement officer) 
+      </commentary>
+      <examples>
+         The British ships dropped anchor and waited for orders form London.
+         A friend in New Mexico said that the order caused no trouble out there.
+         Allowing cats into George and Fido's new club is a violation of club orders.
+      </examples>
+      <mappings>
+	 <wn version="2.0">1 6 9</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="2" type="" name="order of magnitude" group="1">
+      <commentary>
+         "order of"
+         a degree in a continuum of size or quantity
+      </commentary>
+      <examples>
+         It was on the order of a mile.
+         An explosion of low order of magnitude
+      </examples>
+      <mappings>
+	 <wn version="2.0">2</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="3" type="" name="lawfulness" group="1">
+      <commentary>
+         established customary state (especially of society)
+      </commentary>
+      <examples>
+         Order ruled in the streets after the new mayor got to work.
+         Law and order...
+         The judge shouted "order in the court". 
+      </examples>
+      <mappings>
+	 <wn version="2.0">3</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="4" type="Event" name="arrangement" group="1">
+      <commentary>
+         ordering, ordination - 
+         logical or comprehensible arrangement of separate elements
+      </commentary>
+      <examples>
+         We shall consider these questions in the inverse order of their presentation.
+         There were mistakes in the ordering of items on the list.
+      </examples>
+      <mappings>
+	 <wn version="2.0">4 15</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+<!-- I think it will be almost impossible to distinguish between the act of -->
+<!-- putting in order and a logical sequence so I've merged an event sense -->
+<!-- here. -->
+
+   <sense n="5" type="" name="neatness" group="1">
+      <commentary>
+         a condition of regular or proper arrangement
+      </commentary>
+      <examples>
+         He put his desk in order.
+         The machine is now in working order.
+      </examples>
+      <mappings>
+	 <wn version="2.0">5</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="6" type="" name="purchase" group="1">
+      <commentary>
+         a request for some supply for payment
+      </commentary>
+      <examples>
+         IBM received an order for a hundred computers.
+         The food arrived quickly once we gave the waiter our order.
+      </examples>
+      <mappings>
+	 <wn version="2.0">7 13</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="7" type="" name="club" group="1">
+      <commentary>
+         a formal association of people
+      </commentary>
+      <examples>
+         Men from the fraternal order will staff the soup kitchen today.
+         The order of Saint Benedict...
+         Theologians still disagree over whether 'bishop' should or should not be a separate order. 
+      </examples>
+      <mappings>
+	 <wn version="2.0">8 10 11</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="8" type="Biology" name="taxonomic group" group="1">
+      <commentary>
+         taxonomic group containing one or more families
+      </commentary>
+      <examples>
+         Cetacea is a scientific order which includes whales.
+         All dolphins, porpoises, and whales are grouped together in the same scientific order.     
+      </examples>
+      <mappings>
+	 <wn version="2.0">12</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <sense n="9" type="Architecture" name="greek style" group="1">
+      <commentary>
+         one of original three styles of Greek architecture distinguished by
+         the type of column and entablature used or a style developed from the
+         original three by the Romans
+      </commentary>
+      <examples>
+         The Ionic order of architecture is very similar to the Doric order.
+      </examples>
+      <mappings>
+	 <wn version="2.0">14</wn>
+	 <omega></omega>
+	 <pb></pb>
+      </mappings>
+      <SENSE_META clarity=""/>
+   </sense>
+
+   <!-- more senses go here -->
+   <WORD_META authors="cstocker ajarrett" sample_score=""/>
+</inventory>
+                                                                                                                   
+

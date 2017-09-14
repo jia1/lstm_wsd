@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="grant-v">    
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="give permission or privilege, bestow officially as judged due" type="">  
+      <commentary>
+        NP GRANT NP[+object]
+      </commentary>
+      <examples>
+        Users can be granted permission to create and maintain their own websites.
+        She refused to grant any interviews.
+        They granted her an entry visa.
+        He was granted asylum.
+        The company was granted aid by the state authorities.
+        They will grant funding if the research has sufficient prospects of success.
+        Many senior colleges grant degree credit only for intermediate-level courses.
+        The court granted divorce, divided the marital assets, and assigned debts.
+        The bill grants immunity to physicians and pharmacists.
+        Hickman was granted land in 1758.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,4,5,7</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="willing to admit as truth" type="">
+      <commentary>
+        NP[+agent] GRANT NP/SCOMP
+      </commentary>
+      <examples>
+        I grant that it must have been upsetting but even so I think she made a bit of a fuss.
+        I grant you, it's a difficult situation.
+        I'll grant you that there is no organization whatsover to these links.
+      </examples>
+      <mappings>
+         <wn version="2.1">3</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="relinquish (physical) control" type="">
+      <commentary>
+        implies submitting to a higher authority
+      </commentary>
+      <examples>
+        He granted the Queen his life.
+        Therefore also I have granted him to the LORD. As long as he lives he is granted to the LORD.
+        It was he that had, some time before, granted Dearmhagh to God and to Colum Cille.
+      </examples>
+      <mappings>
+         <wn version="2.1">6</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="hwangd,duffielc" sample_score="-"/>  
+</inventory>
+

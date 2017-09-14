@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="build-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="physically construct something, either directly or by implication" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         I built this table myself.
+         They built houses out of sod on the prairies.
+         The government had to raise taxes in order to build new bridges and roads.
+         These architects build in interesting and new styles
+      </examples>
+      <mappings>
+         <wn version="2.1">1,5,7</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="develop, increase" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Resentment about her promotion is building in the office.
+         The clouds over the sea were building into a dark storm front.
+         Suspense was building right from the beginning of the opera
+      </examples>
+      <mappings>
+         <wn version="2.1">2,9,10</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="establish or create a complex process or abstract entity, according to a plan" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Our company's reputation is built on a history of satisfied customers.
+         He is building a nice medical practice in Raleigh.
+         They built a modern nation from democratic principles and free trade.
+         Will the defense build their case around a plea of insanity?
+      </examples>
+      <mappings>
+         <wn version="2.1">3,6,8</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="4" name="improve cleaning action of" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         build detergents
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>

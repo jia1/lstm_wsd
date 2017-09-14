@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="carrier-n">
+   <commentary>
+   </commentary>
+
+   <sense n="1" type="" name="an employee who delivers things, e.g. mail" group="1">
+      <commentary>
+      	CARRIER[+employee][+deliverer][+mail/+newspaper/+groceries]
+	Note: focus is on the ongoing role or service provided
+      </commentary>
+      <examples>
+     	The postal carriers are going on strike.
+	Our regular carrier always throws the newspapers right up on the porch.
+	The carriers for that home delivery service wear pink uniforms.
+      </examples>
+      <mappings>
+         <wn version="2.1">7,8</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="2" type="" name="a bearer who bodily conveys something, e.g, supplies" group="1">
+      <commentary>
+      	CARRIER[+employee][+bearer][+water/+ball/+supplies]
+	Note: focus is on the specific physical act of someone transporting something
+      </commentary>
+      <examples>
+     	The water carriers hold the jugs atop their heads.
+	Number forty-two is the ball carrier and makes it to the nine yard line.
+	John got a couple of spear carrier parts in low budget Hollywood films. (figurative, minor role in crowd scene)
+	The hod carrier brought more bricks to the bricklayers. 
+      </examples>
+      <mappings>
+         <wn version="2.1">1</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="3" type="" name="a vehicle or vessel that transports cargo or passengers" group="1">
+      <commentary>
+      	CARRIER[+conveyor][+vehicle]
+      </commentary>
+      <examples>
+     	Two personnel carriers were destroyed by mortar fire.
+	That's the largest timber carrier ever to dock in a Malaysian port.
+	They can deploy those troop carriers by cargo plane.
+      </examples>
+      <mappings>
+         <wn version="2.1">2</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="4" type="" name="a naval warship bearing aircraft" group="1">
+      <commentary>
+      	CARRIER[+ship][+naval][+war]
+      </commentary>
+      <examples>
+     	During Operation Desert Storm four aircraft carriers were patrolling the Persian Gulf.
+	Fighter jets are launched by steam catapult off the deck of a carrier.
+      </examples>
+      <mappings>
+         <wn version="2.1">3</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+ 
+   <sense n="5" type="" name="a device to hold or transport items" group="1">
+      <commentary>
+      	CARRIER[+device][+holder][+basket/+rack]
+      </commentary>
+      <examples>
+     	Mary has a luggage carrier behind the seat on her bicycle.
+	That car carrier is loaded with six new SUVs.
+	The sales clerk gave me a plastic carrier bag for my purchases.
+      </examples>
+      <mappings>
+         <wn version="2.1">10</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="6" type="" name="a transportation business" group="1">
+      <commentary>
+      	CARRIER[+business][+shipping][+passengers/+cargo]
+      </commentary>
+      <examples>
+     	That cargo carrier delivers mostly to businesses, not private residences.
+	Several major U.S. carriers have placed orders for the new passenger jet.
+	These common carriers ship over half the produce to the northeast.
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+ 
+  <sense n="7" type="" name="an insurance business" group="1">
+      <commentary>
+      	CARRIER[+business][+insurance][+life/+shipping/+medical]
+      </commentary>
+      <examples>
+     	John needs to find out who the carrier is of his father's life insurance policy.
+	Their shipping firm has decided to go with another carrier for their insurance.
+      </examples>
+      <mappings>
+         <wn version="MW online">8</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="8" type="" name="a telecommunications business" group="1">
+      <commentary>
+      	CARRIER[+business][+telecommunications]
+      </commentary>
+      <examples>
+     	That carrier has installed thousands of new cell towers across the country.
+	The possible merger of those carriers is under review by the FCC.
+      </examples>
+      <mappings>
+         <wn version="MW online">7b</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="9" type="" name="an organism carrying a masked recessive gene" group="1">
+      <commentary>
+      	CARRIER[+organism][+trait][+genetic][+recessive]
+      </commentary>
+      <examples>
+     	If both parents are carriers of the recessive gene for Tay-Sacks, their children will be afflicted with it.
+	This pea plant is a carrier of the recessive gene for yellow color, but itself has peas of green color.
+      </examples>
+      <mappings>
+         <wn version="2.1">11</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="10" type="" name="an organism carrying a pathogen, but not showing symptoms" group="1">
+      <commentary>
+      	CARRIER[+organism][+pathogen][-symptom]
+      </commentary>
+      <examples>
+     	These birds may be carriers of the virus, even though they are not yet sick from it.
+	Although Mary felt well, she was a carrier of influenza that she picked up during her trip abroad.
+      </examples>
+      <mappings>
+         <wn version="2.1">9</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="11" type="" name="inactive chemical substance acting as a catalyst" group="1">
+      <commentary>
+      	CARRIER[+substance][+chemical][+inactive][+catalyst]
+      </commentary>
+      <examples>
+     	The pharmaceutical company has patented a carrier for these drugs that must pass the blood-brain barrier.
+	A catalyst is a carrier or facilitator of a chemical reaction without itself becoming part of the reaction.
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="12" type="" name="a particle holding, or capable of holding, electric charge" group="1">
+      <commentary>
+      	CARRIER[+particle][+charge][+capacity]
+      </commentary>
+      <examples>
+     	Electrons and ions are examples of electric charge carriers.
+	In semi-conductor physics, the travelling vacancies in the valance-band electron population, (holes) are treated as charge carriers.
+      </examples>
+      <mappings>
+         <wn version="MW online">2e</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <sense n="13" type="" name="a modulated radio wave that can convey a signal" group="1">
+      <commentary>
+      	CARRIERS[+wave][+electromagnetic][+radio][+modulated]
+      </commentary>
+      <examples>
+     	The modulating signal can be multiplied by the carrier wave using a frequency mixer.
+	AM radio uses a form of modulation where the amplitude of a carrier wave is varied in direct proportion to that of a modulating signal.
+      </examples>
+      <mappings>
+         <wn version="2.1">6</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>
+

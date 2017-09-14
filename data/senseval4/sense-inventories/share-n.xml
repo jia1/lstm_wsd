@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="share-n">
+   <commentary>
+   </commentary>
+   <sense n="1" type="" name="a portion or percentage of a whole" group="1">
+      <commentary>
+        +quantity +part
+      </commentary>
+      <examples>
+        John wants his fair share of the poker winnings.
+        I've had my share of travel hassles this month!
+        Our foreman doesn't think everyone has been doing his or her share of the work.
+      </examples>
+      <mappings>
+         <wn version="2.1">2,3,4</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+ <sense n="2" type="" name="capital stock in a corporation" group="1">
+      <commentary>
+        +financial +legal
+      </commentary>
+      <examples>
+       I bought 2000 shares of Microsoft.
+       How much is a share of Google worth these days?
+      </examples>
+      <mappings>
+         <wn version="2.1">1</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+<sense n="3" type="" name="a tool for tilling soil" group="1">
+      <commentary>
+        +physical +artifact
+      </commentary>
+      <examples>
+        The steel share had trouble breaking a furrow in the heavy red clay.
+         They turned swords into shares.
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense> 
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>
+

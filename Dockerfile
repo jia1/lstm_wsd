@@ -17,10 +17,11 @@ WORKDIR /src
 RUN mkdir tmp && cd tmp && mkdir model && cd model && mkdir 2 && cd ../..
 
 #Download Glove
-RUN mkdir data && cd data && \
-      curl -O http://nlp.stanford.edu/data/glove.6B.zip && \
-      unzip glove.6B.zip -d ./glove.6B
-
+#RUN mkdir data && cd data && \
+#      curl -O http://nlp.stanford.edu/data/glove.6B.zip && \
+#      unzip glove.6B.zip -d ./glove.6B
+#Get models
+#RUN cp /home/camille/2/
 ### Download Senseval
 #RUN cd data && mkdir senseval2 && cd senseval2 && \
 #	curl http://www.d.umn.edu/~tpederse/Data/lexical-sample.dtd.tar.gz | tar -xz && \

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="begin-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="start, have an initial point " type="">
+      <commentary>
+        The subject is NOT acting intentionally.  It is either inanimate (and
+           cannot have intentions), or it is animate but it is experiencing the
+           beginning of something (like illness) rather than intending to begin
+           something.
+        NP(-agent) BEGIN (PP)/(COMP)
+      </commentary>
+      <examples>
+         Prices for these homes begin at $250,000
+         The war began on a Thursday.
+         She began to feel sick.
+         When life began was there oxygen in the atmosphere?
+         The novel begins with a shipwreck at sea.
+         It's beginning to look like rain.
+         His property begins at the fence.
+      </examples>
+      <mappings>
+         <wn version="2.1">2,3,5,6,7</wn>
+         <omega/>
+         <pb>begin.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="initiate an undertaking" type="">
+      <commentary>
+        The subject IS acting intentionally; therefore, it must be animate
+           or interpretable as animate (like a company).
+        NP1(+agent) BEGIN NP2/COMP
+      </commentary>
+      <examples>
+         They'll begin their tour with a concert in London.
+         You should begin the stew now so it will have four hours to simmer.
+         The government is beginning to protect the coral reefs of that island.
+         He was just beginning a novel when the phone rang.
+         Acme Tire Co. began offering their employees health insurance.
+         John has begun to take them seriously.
+         She began ballet at age four.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,8,5</wn>
+         <omega/>
+         <pb>begin.01</pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="make a locution, speak" type="">
+      <commentary>
+        NP BEGIN [direct quotation]
+      </commentary>
+      <examples>
+         &quot;now listen, friends&quot;, he began.
+      </examples>
+      <mappings>
+         <wn version="2.1">4</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="4" name="partially attain" type="">
+      <commentary>
+       NP MODAL-VERB BEGIN TO-COMP (functions as an intensifier, usually in a
+       negative context)
+       Note: The meaning of the sentence doesn't change if 'begin' is removed.
+      </commentary>
+      <examples>
+         The rent you could get for that place wouldn't begin to cover the mortgage and taxes.
+         Can those refugees even begin to hope they'll be granted asylum?
+         I couldn't begin to tell you all the ways she has contributed to this club.
+      </examples>
+      <mappings>
+         <wn version="2.1">9</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston,brownsw" sample_score="-"/>
+</inventory>

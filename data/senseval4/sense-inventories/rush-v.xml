@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="rush-v">    
+   <commentary>
+   </commentary>
+   <sense n="1" type="" name="move forward, act at speed, pelt along" group="1">  
+      <commentary>
+        NP rush [-TRANS]
+        Includes: RUSH ALONG, RUSH OUT
+      </commentary>
+      <examples>
+        "She rushed to the hospital with the feverish child in her arms."
+        "He rushed down the hall to receive the guests."
+        "Water rushed over the falls."
+        "We are late. We have to rush!"
+        "She rushed out of the building."
+        "The kids rush along from all directions."
+      </examples>
+      <mappings>
+         <wn version="2.1">1,4</wn>   
+         <wn version="2.1" lemma="rush_along">1</wn>
+         <wn version="2.1" lemma="rush_out">1</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="2" type="" name="make someone or something hasten, induce or stimulate" group="1">  
+      <commentary>
+        NP rush [+TRANS] NP
+        Includes: RUSH ALONG, RUSH OUT, RUSH OFF, RUSH OUT
+      </commentary>
+      <examples>
+        "The project manager rushed completion of the project."
+        "Please don't rush me!"
+        "The psychologist rushed the rats through a long maze."
+        "The infantry rushed the enemy after the artillery barrage."
+        "The injured man was rushed away in a helicopter."
+        "The author rushed the plot along too quickly!"  
+      </examples>
+      <mappings>
+         <wn version="2.1">2,3,6,7</wn>
+         <wn version="2.1" lemma="rush_along">1</wn>
+         <wn version="2.1" lemma="rush_out">1</wn>
+         <wn version="2.1" lemma="rush_away">1</wn>
+         <wn version="2.1" lemma="rush_off">1</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="3" type="" name="run with a ball" group="1">
+      <commentary>
+      </commentary>
+      <examples>
+        "The football player rushed for a total of 150 yards."
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense n="4" type="" name="meet or get to know members of fraternity or sorority" group="1">
+      <commentary>
+      </commentary>
+      <examples>
+        "I figured the best way to get ahold of her was to rush that frat."
+        "During the second semester I rushed the sorority and was initiated in April."
+      </examples>
+      <mappings>
+         <wn version="2.1"></wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>   
+   <WORD_META authors="hwangd,duffielc" sample_score="-"/>  
+</inventory>
+

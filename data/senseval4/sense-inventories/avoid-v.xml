@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory lemma="avoid-v">    
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="keep away, prevent from happening, or not do something" type="">
+      <commentary>
+        NP1 AVOID NP2
+
+        Includes both:
+        1. Keeping away physically from something
+        2. Prevent from something undesireable from happening
+      </commentary>
+      <examples>
+        Do you think he's avoiding me? I haven't seen him all day.
+        I try to avoid supermarkets on Saturdays - they're always so busy.
+        I tried to avoid chocolate, but it didn't go so well.
+        The plane narrowly avoided disaster when one of the engines cut out.
+        I left the pub to avoid a fight.
+        Unnecessary paperwork should be avoided.
+        I narrowly avoided colliding with it.
+      </examples>
+      <mappings>
+         <wn version="2.1">1,2,3,4</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="LAW- annul, make void, make invalid" type="">
+      <commentary>
+      </commentary>
+      <examples>
+        How can these grants of the king be avoided?
+        The terms of the written contract could be avoided and nullified.
+        If the "VOID" box is marked that shall avoid the National Lotto Game Selection.
+        Zimmer also filed a bankruptcy lawsuit to avoid the lien and deed.
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>
+         <omega></omega><pb></pb>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="hwangd" sample_score="-"/>  
+</inventory>
+

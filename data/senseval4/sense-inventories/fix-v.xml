@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="fix-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="repair,mend" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         They charged a lot to fix my car.
+         I'm fixing that tear in your jacket.
+      </examples>
+      <mappings>
+         <wn version="2.1">1</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="fasten,secure" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         The cat got out when the latch to the back door wasn't fixed.
+         Let's fix the picture to the frame
+         As he was fixing his hand on her shoulder, she turned at him with an icy glare.
+      </examples>
+      <mappings>
+         <wn version="2.1">2,8,10</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="specify" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         See what you get when this variable is fixed to a higher value.
+         We haven't fixed the date for our wedding yet.
+      </examples>
+      <mappings>
+         <wn version="2.1">3,6</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="4" name="prepare, make, get ready" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         She was fixing dinner when the phone rang.
+         Can you fix these samples and send them over to pathology?
+         I was fixing to leave town after I paid the hotel bill.
+      </examples>
+      <mappings>
+         <wn version="2.1">4,7,11</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="5" name="take revenge on" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Just wait, I'll fix you!
+      </examples>
+      <mappings>
+         <wn version="2.1">5</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="6" name="sterilize" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         She's going to get her two cats fixed next week.
+      </examples>
+      <mappings>
+         <wn version="2.1">9</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>

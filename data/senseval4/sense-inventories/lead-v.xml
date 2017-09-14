@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory
+  SYSTEM 'inventory.dtd'>
+<inventory lemma="lead-v">
+   <commentary>
+   </commentary>
+   <sense group="1" n="1" name="result in, tend to, cause, conduce" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Washing clothes without bleach will lead to duller colors eventually.
+         This remark led to further arguments among the guests
+         Her greed led her to forge the checks
+         This path is leading him to disaster.
+         More exercise will lead to better cardiovascular health.
+      </examples>
+      <mappings>
+         <wn version="2.1">2,3,5,9</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="2" name="travel in front of, be first, precede" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         The majorettes led the parade on Main Street.
+         That country leads the world in annual silk production.
+         John is now leading in the tennis tournament.
+      </examples>
+      <mappings>
+         <wn version="2.1">4,8,13</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="3" name="extend, connect, afford access to" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Train service no longer leads all the way out to those villages.
+         I wonder where this twisty passage will lead.
+         The French doors in the living room lead onto a wide terrace.
+      </examples>
+      <mappings>
+         <wn version="2.1">6,12</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="4" name="head, preside, direct" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Who will be leading this project?
+         The conductor led the audience in a medley of patriotic tunes.
+         I've been asked to lead the service this evening.
+      </examples>
+      <mappings>
+         <wn version="2.1">7,10,15</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="5" name="guide" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         You can lead a horse to water, but you can't make him drink.
+         This problem has been leading me in circles.
+         He led her upstairs to see his etchings.
+      </examples>
+      <mappings>
+         <wn version="2.1">1</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="6" name="pass, spend" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         They are leading a splendid life on the Amalfi coast.
+         He led a life of quiet virtue.
+      </examples>
+      <mappings>
+         <wn version="2.1">11</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <sense group="1" n="7" name="run, place" type="">
+      <commentary>
+      </commentary>
+      <examples>
+         Be sure to lead the wire behind the furniture, so we won't trip on it.
+      </examples>
+      <mappings>
+         <wn version="2.1">14</wn>
+         <omega/><pb/>
+      </mappings><SENSE_META clarity=""/>
+   </sense>
+   <WORD_META authors="ahouston" sample_score="-"/>
+</inventory>

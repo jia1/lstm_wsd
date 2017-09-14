@@ -10,10 +10,12 @@ from itertools import groupby
 import random
 
 
-train_path2 = './data/senseval2/eng-lex-sample.training.xml'
-test_path2 = './data/senseval2/eng-lex-samp.evaluation.xml'
+train_path2 = './data/senseval2/train_extended'
+test_path2 = './data/senseval2/eng-lex-samp.evaluation'
 train_path3 = './data/senseval3/EnglishLS.train.mod'
 test_path3 = './data/senseval3/EnglishLS.test.mod'
+train_path4='./data/senseval4/english-lexical-sample.train.xml'
+test_path4='./data/senseval4/english-lexical-sample.test.xml'
 
 replace_target = re.compile("""<head.*?>.*</head>""")
 replace_newline = re.compile("""\n""")
@@ -60,10 +62,13 @@ def load_train_data(se_2_or_3):
         return load_senteval2_data(train_path2, True)
     elif se_2_or_3 == 3:
         return load_senteval3_data(train_path3, True)
-    elif se_2_or_3 == 23:
+    elif se_2_or_3== 4:
+	return load_senteval3_data(train_path2, True)
+    elif se_2_or_3 == 234:
         two = load_senteval2_data(train_path2, True)
         three = load_senteval3_data(train_path3, True)
-        return two + three
+	four = load_senteval2_data(train_path4, True)
+        return two + three + four
     else:
         raise ValueError('2, 3 or 23. Provided: %d' % se_2_or_3)
 
@@ -73,6 +78,8 @@ def load_test_data(se_2_or_3):
         return load_senteval2_data(test_path2, False)
     elif se_2_or_3 == 3:
         return load_senteval3_data(test_path3, False)
+    elif se_2_or_3 == 4:
+        return load_senteval3_data(test_path4, False)
     elif se_2_or_3 == 23:
         two = load_senteval2_data(test_path2, False)
         three = load_senteval3_data(test_path3, False)
@@ -88,27 +95,39 @@ def load_senteval3_data(path, is_training):
 def load_senteval2_data(path, is_training, dtd_validation=True):
     data = []
     parser = et.XMLParser(dtd_validation=dtd_validation)
-    doc = et.parse(path, parser)
+    xml=path+'.xml'
+    doc = et.parse(xml, parser)
     instances = doc.findall('.//instance')
+    all_ready_seen=[]
+
+    if is_training:
+        keys=open(path+'.key')
+        answers={}
+        line=keys.readline()
+        while line!="":
+            row=line.split()
+            id_answer=row[1]
+            answer=row[2]
+            answers[id_answer]=answer
+            line=keys.readline()
 
     for instance in instances:
         answer = None
         context = None
         for child in instance:
-            if child.tag == 'answer':
-                senseid = child.get('senseid')
-                if senseid == 'P' or senseid == 'U':  # ignore
-                    pass
-                else:
-                    answer = senseid
-            elif child.tag == 'context':
+            
+            if child.tag == 'context':
                 context = et.tostring(child)
             else:
                 raise ValueError('unknown child tag to instance')
-
+        
         # if valid
-        if (is_training and answer and context) or (not is_training and context):
+        if (is_training  and context) or (not is_training and context):
             context = clean_context(context)
+            if is_training:
+                answer=answers[instance.get('id')]
+            else:
+                answer=None
             x = {
                 'id': instance.get('id'),
                 'docsrc': instance.get('docsrc'),
@@ -116,16 +135,23 @@ def load_senteval2_data(path, is_training, dtd_validation=True):
                 'target_sense': answer,  # todo support multiple answers?
                 'target_word': instance.get('id').split('.')[0],
             }
-            data.append(x)
+            if not x['id'] in all_ready_seen:
+                data.append(x)
+                all_ready_seen.append(x['id'])
 
     return data
 
 
 def get_lexelts(se_2_or_3):
     items = []
-    path = train_path2 if se_2_or_3 == 2 else train_path3
+    if se_2_or_3 ==2:
+	path=train_path2
+    elif se_2_or_3 ==3:
+	path=train_path3
+    else:
+	path=train_path4
     parser = et.XMLParser(dtd_validation=True)
-    doc = et.parse(path, parser)
+    doc = et.parse(path+'.xml', parser)
     instances = doc.findall('.//lexelt')
 
     for instance in instances:
@@ -213,14 +239,23 @@ def convert_to_numeric(data, word_to_id, target_word_to_id, target_sense_to_id, 
     target_tag_id = word_to_id['<target>']
     for instance in data:
         words = split_context(instance['context'])
+        instance_id = instance['id']
+        
         ctx_ints = [word_to_id[word] for word in words if word in word_to_id]
-        stop_idx = ctx_ints.index(target_tag_id)
+        try:
+            stop_idx = ctx_ints.index(target_tag_id)
+        except ValueError:
+            stop_idx=0
+            print(instance_id)
         xf = np.array(ctx_ints[:stop_idx])
         xb = np.array(ctx_ints[stop_idx+1:])[::-1]
-        instance_id = instance['id']
         target_word = instance['target_word']
         target_sense = instance['target_sense']
-        target_id = target_word_to_id[target_word]
+        try:
+            target_id = target_word_to_id[target_word]
+        except KeyError:
+            print(instance_id)
+            target_id=target_word_to_id['leave']
         senses = target_sense_to_id[target_id]
         sense_id = senses[target_sense] if target_sense else -1
 
